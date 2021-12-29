@@ -1,0 +1,236 @@
+---
+title: "Exploratory Analysis of the Spread of the SARS-CoV-2 Omicron (B.1.1.529) Variant in Austria"
+author: "Fabian Valka"
+date: 20th of December 2021
+output: bookdown::pdf_document2
+bibliography: ["../bibliography/fabian_valka.bib"]
+---
+
+```{r setup, include=FALSE}
+library(targets)
+library(dplyr)
+library(ggplot2)
+library(here)
+library(gt)
+library(patchwork)
+library(kableExtra)
+
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_knit$set(root.dir = here())
+
+```
+
+# Variant tracking in Austria
+
+## Surveillance system
+
+Austria performs both variant specific PCR testing on positive PCR samples, as well as sequencing. Sequencing is split up into two parts with sentinel surveillance for new variants and targeted sequencing of specific variants assigned in variant specific PCR sampling.
+
+Combined results of the variant specific PCR testing are published as weekly whole-country aggregated case counts by VOC in an online report. 
+
+It is not clearly specified whether the report includes cases by reporting or lab diagnosis date, but since later reports always include increases in VOC cases in previous weeks it is assumed that the VOC cases are grouped into weeks by original lab diagnosis date, similar to other case data published in Austria. The report is based upon the variant specified in the austrian epidemiological tracking system (EMS).
+
+## Variants tracked in Austria
+
+Austria currently tracks the variants shown in table \@ref(tab:variantstracked).
+
+
+| WHO Label | Pango Lineage | PCR Screening | Sequenced when found in PCR | Data Available |
+|-----------|---------------|---------------|-----------------------------|----------------|
+| Alpha     | B.1.1.7       | No            | No                          | Yes            |
+| Beta      | B.1.351       | Yes           | Yes                         | Yes            |
+| Gamma     | P.1           | Yes           | Yes                         | Yes            |
+| Delta     | B.1.617.2     | Yes           | No                          | Yes            |
+| Omicron   | B.1.1.529     | Yes           | Yes                         | Yes            |
+
+Table: (\#tab:variantstracked) Variants tracked in Austria. Data available refers to the number of variants detected being reported in the AGES variant surveillance report. "PCR Screening" and "Sequenced when found in PCR" as defined by the guidelines of the Austrian health ministry (Bundesministerium Soziales, Gesundheit, Pflege und Konsumentenschutz) as of the 20th of December 2021, last updated on the 1st of December 2021.
+
+```{r}
+data <-  tar_read("data")
+
+data %>%
+  filter(Kalenderwoche >= as.Date("2021-11-01")) %>%
+  select(Kalenderwoche, variant, cases, cases_all, cases_assigned) %>%
+  reshape2::dcast(Kalenderwoche + cases_all + cases_assigned ~ variant, value.var = "cases") %>%
+  mutate(proportion_assigned = scales::percent(cases_assigned/cases_all, accuracy = 0.1)) %>%
+  select(Kalenderwoche, `B.1.1.7 (Alpha)`, `B.1.351 (Beta)`, 
+         `P.1 (Gamma)`, `B.1.617.2 (Delta)`, `B.1.1.529 (Omikron)`,
+         cases_assigned, cases_all, proportion_assigned) %>%
+  rename("Date, week ending"=Kalenderwoche,
+         "Assigned VOC cases"=cases_assigned,
+         "All cases"=cases_all,
+         "Proportion cases assigned to VOC"=proportion_assigned) %>%
+  knitr::kable(caption = "Reported cases of variants of concern in Austria.") %>%
+  kableExtra::column_spec(1, width = "2cm") %>%
+  kableExtra::column_spec(2:8, width = "1.35cm") %>%
+  kableExtra::column_spec(9, width = "1.5cm")
+
+```
+
+There have historically been large changes in the proportion of cases assigned to a VOC among all cases reported in Austria. Based upon sentinel full genome sequencing it can still be concluded that expect for the initial growth of Alpha over wild type infections one of the tracked VOCs was dominant in the respective time range. 
+
+```{r cases-assigned-voc, warning=FALSE, out.width = '100%', fig.width=10, fig.height=4.6, dpi=150, fig.cap="Proportion of cases assigned to each variant of all cases reported.", dev="png"}
+tar_read("plot_assigned")
+```
+
+
+
+# Assumptions
+
+All of the analyses in this section contain the following assumptions. 
+
+- Representative sampling for testing with variant specific PCR among all positive PCR tests. 
+  - This assumption might especially be violated in the early phase of the Omicron variants spread in Austria since targeted testing on people with a travel history to southern Africa has been performed. Also more targeted contact tracing efforts and preferred testing of suspected Omicron cases could violate this assumption for early Omicron case reports. 
+- All samples are one of the tracked variants of concern. 
+  -No numbers are provided for the total number of samples tested. It is assumed that the total number of samples tested is the sum of all variant of concern cases reported. 
+- Representative sampling for regions within Austria. 
+  - Currently weekly data about VOC cases are only available for Austria as a whole.
+
+# Multinomial model
+
+```{r}
+
+multinomial_fit <- tar_read("multinomial_fit")
+
+```
+
+## Methods
+
+A Bayesian multinomial GLMM was specified using brms (version `r packageVersion("brms")`). Variant of concern data starting from the 1st of September 2021 for the following variants were included: Alpha (B.1.1.7), Delta (B.1.617.2) and Omicron (B.1.1.529) At the beginning of September 3 samples of Gamma (P.1) were also reported and 1 sample of Beta (B.1.351). Detection of other variants of concern has not been reported in Austria in the time period from `r multinomial_fit$model_start` to `r max(multinomial_fit$model_data$Kalenderwoche)`. Estimates of CIs are Bayesian credible intervals estimated using highest density intervals. 
+
+A simple model structure with one growth rate and intercept per variant was used. An observation-level random effect was added to account for overdispersion in the VOC case data. Delta (B.1.617.2) was used as the reference variant for the model since it was detected over the whole time period. <!--Results were compared in a sensitivity analysis to methods previously published using multinom from nnet and obtaining relative growth rates using emtrends from emmeans, these were in agreement with the Bayesian model. Usage of splines in the nnet model also resulted in a slightly worse BIC and were therefore not used. --> 
+
+## Results
+
+```{r}
+multinomial_growth_rate <- tar_read("multinomial_growth_rate")
+
+multinomial_growth_rate_ci_90 <- multinomial_growth_rate %>% 
+  filter(CI==0.9)
+```
+
+We estimate that Omicron (B.1.1.529) has a daily growth advantage of `r round(multinomial_growth_rate_ci_90$Median, 2)` 
+(90% ci `r round(multinomial_growth_rate_ci_90$CI_low, 2)` - `r round(multinomial_growth_rate_ci_90$CI_high, 2)`) over Delta (B.1.617.2) in Austria. 
+
+```{r multinomial-fit-zoomed, echo=FALSE, warning=FALSE, out.width = '100%', fig.width=10, fig.height=4.6, dpi=150, fig.cap="Multinomial model fit.", dev="png"}
+tar_read("plot_multinomial_fit_zoomed")
+```
+
+
+
+```{r multinomial-growth-posterior, out.width = '100%', fig.width=10, fig.height=4.6, dpi=150, fig.cap="A: Estimated growth advantage of Omicron over Delta. B: Probability of Omicron making up half or more of the cases assigned to any variant.", dev="png"}
+(tar_read("plot_multinomial_growth_advantage_posterior") | tar_read("plot_multinomial_half")) + plot_annotation(tag_levels = 'A')
+```
+
+
+# Estimation based on a fit of the time-varying effective Reproduction Number $R_t$
+
+## Methods
+
+We fit two Bayesian regression model one to reported cases of Delta in Austria and a second one to reported Omicron cases. A sampling factor is introduced which is used to link cases to infections using a time delay distribution in the model. The sampling factor is defined as the proportion of cases assigned to any VOC to all cases in each week. Additionally a previous infection ascertainment ratio (IAR) estimate is used as the prior for the sampling factor to obtain a more reasonable scale of infections. A fixed IAR of 0.6 is used. 
+
+This model assumes the same generation time distribution for both Delta and Omicron, as well as the same time from infection to case reporting, by lab diagnosis date, based upon data from the Austrian epidemiological surveillance system (EMS).
+
+Both of the models are fitted only to estimate $R_t$, and changes in population immunity are only reflected by changes in $R_t$. Since $R_t$ is estimated for infections, this only affects the most recent $R_t$ estimates and we therefore compare estimates 10 days before the last date of cases. A multiplicative advantage is calculated by drawing samples from the posterior for $R_t$, dividing the samples and estimating Bayesian credible intervals using highest density intervals in in the bayestestR package (version `r packageVersion("bayestestR")`). The model is built using the epidemia R package (version `r packageVersion("epidemia")`). 
+
+Infections are seeded 20 days before the first cases was reported for Omicron and 20 days before 10 cases were reported for Delta. A weekly random walk is used in the predictor of $R_t$. In addition change points, where a larger changes in $R_t$ is expected, have been added for various dates where major NPIs have been implemented, on the 1st of April 2021, 8th of November 2021, 15th of November 2021 and 22nd of November 2021. 
+
+## Results
+
+```{r, warning=FALSE}
+fit_delta <- tar_read("epidemia_fit_delta")
+fit_omicron <- tar_read("epidemia_fit_omicron")
+
+rt_offset <- -10
+
+rt_delta_draws <- epidemia::posterior_rt(fit_delta$fit)
+rt_omicron_draws <- epidemia::posterior_rt(fit_omicron$fit)
+
+multiplicative_advantage <- rt_omicron_draws$draws[, length(rt_omicron_draws$time) + rt_offset] / rt_delta_draws$draws[, length(rt_delta_draws$time) + rt_offset]
+
+multiplicative_advantage_ci90_low <- (bayestestR::hdi(multiplicative_advantage, .9) %>% as.list())$CI_low
+multiplicative_advantage_ci90_high <- (bayestestR::hdi(multiplicative_advantage, .9) %>% as.list())$CI_high
+```
+
+We estimate a `r sprintf("%.1f", median(multiplicative_advantage))` (90% ci `r sprintf("%.1f", multiplicative_advantage_ci90_low)` - `r sprintf("%.1f", multiplicative_advantage_ci90_high)`) multiplicative advantage of Omicron over Delta in the time-varying effective reproduction number $R_t$, assuming equal generation time distributions for Omicron and Delta. 
+
+```{r epidemia-multiplicative-advantage, warning=FALSE, out.width = '100%', fig.width=10, fig.height=4.6, dpi=150, fig.cap="Posterior of the multiplicative advantage in the effective reproduction number of Omicron over Delta, assuming equal generation time distributions. B and C, Comparison of the effective Reproduction Numbers 10 days before the last day of reported VOC cases", dev="png", message=FALSE}
+
+
+p_multiplicative_advantage <- plot(bayestestR::hdi(multiplicative_advantage, c(0.3, 0.6, 0.9))) +
+  scale_x_continuous(breaks = 0:100) +
+  scale_fill_brewer(direction = -1)  +
+  coord_cartesian(xlim = c(0,14)) +
+  ggpubr::theme_pubclean() +
+  ggtitle("Multiplicative growth advantage") +
+  labs(x="Multiplicative growth advantage")
+
+
+p_rt_delta <- plot(bayestestR::hdi(rt_delta_draws$draws[, length(rt_delta_draws$time) + rt_offset], c(0.3, 0.6, 0.9))) +
+  scale_fill_brewer(direction = -1, palette = "Greens") +
+  geom_vline(xintercept = 1, linetype="dashed") +
+  ggpubr::theme_pubclean() +
+  scale_x_continuous(breaks = 0:10) +
+  coord_cartesian(xlim = c(0, 6)) +
+  ggtitle("Rt of B.1.617.2 (Delta)") +
+  labs(x="Effective time-varying reproduction number, Rt") 
+
+p_rt_omicron <- plot(bayestestR::hdi(rt_omicron_draws$draws[, length(rt_omicron_draws$time) + rt_offset], c(0.3, 0.6, 0.9))) +
+  scale_fill_brewer(direction = -1, palette = "Greens") +
+  geom_vline(xintercept = 1, linetype="dashed") +
+  ggpubr::theme_pubclean() +
+  scale_x_continuous(breaks = 0:10) +
+  coord_cartesian(xlim = c(0, 6)) +
+  ggtitle("Rt of B.1.1.529 (Omikron)") +
+  labs(x="Effective time-varying reproduction number, Rt")
+
+
+p_multiplicative_advantage | (p_rt_delta / p_rt_omicron)
+
+
+```
+
+### Model fits and estimates of epidemiological trajectories 
+
+```{r, warning=FALSE}
+plot_epidemia_fit <- function(fit) {
+  epidemia_delta_rt <- epidemia::plot_rt(fit$fit, step = T, levels = c(50,95)) + 
+    ggpubr::theme_pubr() + 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    ggtitle("Reproduction Number")
+  
+  epidemia_delta_obs <- epidemia::plot_obs(fit$fit, type = "cases", levels = c(50, 95))  + 
+    ggpubr::theme_pubr() + 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    ggtitle("Weekly assigned cases")
+  
+  epidemia_delta_obs_extrapolated <- epidemia::plot_obs(fit$fit, 
+           type = "cases", 
+           levels = c(50, 95), 
+           newdata = fit$original_data %>%
+             mutate(sampled=1)) +
+    ggtitle("Weekly extrapolated cases") +
+    ggpubr::theme_pubr() + 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  
+  epidemia_delta_infections <- epidemia::plot_infections(fit$fit) + 
+    ggpubr::theme_pubr() + 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    ggtitle("Daily infections")
+  
+  (epidemia_delta_rt | epidemia_delta_obs) /
+    (epidemia_delta_infections | epidemia_delta_obs_extrapolated) + 
+    plot_annotation(tag_levels = 'A')
+}
+
+```
+
+```{r epidemia-delta-fit, echo=FALSE, warning=FALSE, out.width = '100%', fig.width=10, fig.height=7, dpi=150, fig.cap="", dev="png"}
+plot_epidemia_fit(fit_delta) +
+  plot_annotation(title="Delta (B.1.617.2)")
+```
+
+```{r epidemia-omicron-fit, echo=FALSE, warning=FALSE, out.width = '100%', fig.width=10, fig.height=7, dpi=150, fig.cap="", dev="png"}
+plot_epidemia_fit(fit_omicron) +
+  plot_annotation(title="Omicron (B.1.1.529)")
+```

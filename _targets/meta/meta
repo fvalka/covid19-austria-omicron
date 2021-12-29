@@ -1,0 +1,57 @@
+name|type|data|command|depend|seed|path|time|size|bytes|format|iteration|parent|children|seconds|warnings|error
+load_variants_from_web|function|23f731d0931704a5||||||||||||||
+load_all_variants|function|c41e7e66f45d93e4||||||||||||||
+bayesian_multinomial_growth_rate|stem|aa78f78837f03a12|0728c0f61ac19f91|d4cc818aa98ec4ae|319468020||t18981.5334572464s|cce5fe8eabf2775f|556|rds|vector|||0.379||
+export_extraploted_variant_proportion|function|a381c7ea1492e524||||||||||||||
+.Random.seed|object|675484f112499e18||||||||||||||
+determine_zoom_y_limit|function|0e79a546261f32af||||||||||||||
+epidemia_fit_variant|function|43d040a8ffe58aeb||||||||||||||
+export_plot_log_odds|function|94be2346fca177fc||||||||||||||
+binomial_model_data_convert|function|ce552f4dadc9ab03||||||||||||||
+estimate_proportion|function|6942fa722422c2f8||||||||||||||
+draw_samples_from_multinomial_fit|function|cdb60da85fe57f29||||||||||||||
+export_plot_with_title|function|6812a787414a785f||||||||||||||
+fit_bayesian_multinomial_model|function|cae03df13f47c49c||||||||||||||
+extract_bayesian_multinomial_growth_rate|function|b7ceffe467cb1575||||||||||||||
+plot_cases_assigned_voc|function|24c25a786217e685||||||||||||||
+plot_glm_log_odds|function|b6398f3c1104c8ea||||||||||||||
+fit_betabinomial_glm|function|f1ce9dc06d83e0eb||||||||||||||
+export_plot_quasibinomial_fit_ci_zoom|function|19f4603a5306dd5e||||||||||||||
+plot_multinomial_growth_advantage|function|476d365c1441b0d0||||||||||||||
+data_adjust_sampling|function|fd4ecfdc63241512||||||||||||||
+plot_multinomial_weekly_fold_increase|function|4fd3621945a8264b||||||||||||||
+export_raw_data|function|dbe7bd0f477cb86e||||||||||||||
+plot_extraploted_variant_proportion|function|3a248aeceb2164c2||||||||||||||
+plot_variants_area|function|98505d2c95d46ea0||||||||||||||
+plot_glm_with_ci|function|4710fd11cc6fe2dc||||||||||||||
+fit_binomial_glm|function|695f85b4fc1075ef||||||||||||||
+fit_quasibinomial_glm|function|00c3abab5faeba03||||||||||||||
+process_variant_data|function|e132c38a54ef06fc||||||||||||||
+plot_probablity_more_than_half|function|3fbacd4b64c06eb0||||||||||||||
+plot_multinomial_fit|function|25a194fae0a777f8||||||||||||||
+raw_data_file|stem|680de23ec599549c|b720bb89fd00f5f5|ef46db3751d8e999|2110307107|https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2021-12-29.csv|t18990.5022079381s||0|url|vector|||2.84||
+raw_data|stem|7969dc33f9067f70|67dc4edba086ba1a|ef9810a4364b5eb6|-979620141||t18990.5022585s|4db421019aad1552|1206|rds|vector|||3.245||
+file_raw_data_export|stem|cc1dd032879cf1b0|db6ebd2cdad83e63|ecdbea90828eeca3|-506327921|data/ages_varianten/Varianten_nach_KWs_2021-12-29.csv|t18990.5023053968s|89b1f35109a82dca|1306|file|vector|||2.969||
+data|stem|33f73b3c78abeda2|b4f6e1ed87270214|bc40571f5ad74dfb|1588979285||t18990.502307619s|150072b4154793cb|6082|rds|vector|||3.146||
+plot_variants_area_zoomed|stem|14837b2d7d277278|d4276cf8893d4260|707ee598546ed1da|1832408261||t18990.502361136s|65cb1b6c44a138f6|140607|rds|vector|||3.108||
+plot_omicron_proportion_assigned|stem|15fcf3a8e64276e8|8cba6e61469bed3f|cae24e8a6548ab18|-1532890737||t18990.5023627563s|b285a3e136800f20|140471|rds|vector|||3.095||
+epidemia_fit_omicron|stem|852145906a99afe5|aecd39c42489004a|4e8f8c01400680dc|529236947||t18990.5028914449s|31ff9d1ea34a4ca8|4582512|rds|vector|||39.944|Tail Effective Samples Size ESS is too low, indicating posterior variances and tail quantiles may be unreliable.Running the chains for more iterations may help. Seehttpmcstan.orgmiscwarnings.htmltailess|
+binomial_fit|stem|42547e7808226dba|7b0d685ba276f90b|c12b399b263958ae|-497983523||t18990.5029495914s|a84dbb3471ae8122|24612966|rds|vector|||44.408||
+quasibinomial_fit|stem|ffc2900a2294ace8|af07f1b3b0019389|1c7896e0c7283aaa|1375958462||t18990.5029505636s|727c645e40bb7d6c|10937|rds|vector|||3.084||
+plot_assigned|stem|3f3a86c80a1bb622|8bbce6ebda797e42|01e4f13740c1b43b|-1481610266||t18990.5030015806s|f221485b0918672a|98294|rds|vector|||3.124||
+plot_quasibinomial_log_odds|stem|f88ec4df829f059f|07ce511de0550d60|0a755cfc0c71f2df|782611902||t18990.5030029695s|d4eeeea6be771ed9|100946|rds|vector|||3.162||
+plot_quasibinomial_fit_ci_zoom|stem|97246e2fa8c7b5dc|4b6d74f055c153ee|329f8b02d9561a38|1625061591||t18990.5030543569s|c29249e99d18bf5b|154379|rds|vector|||3.121||
+file_plot_quasibinomial_fit_log_odds|stem|95e832a467e56646|c8a1b4088b8aa174|78bed8f20ba0ae34|259986559||t18990.5030698194s|887021b347b02e8f|100|rds|vector|||4.004||
+file_variants_area_plot|stem|fbafe5f36644d645|505b2cf85d5f447e|0639a78fe88195fe|-772879215|output/austria-variants-area.png|t18990.5031112071s|5e19344754301747|198228|file|vector|||3.445||
+file_all_assigned_plot|stem|680c2f4a738eb929|c4a875d9206ce786|ebb19d4ca40eadd0|1277880924|output/austria-variants-assigned.png|t18990.5031321787s|cd3449bcc5522edf|155342|file|vector|||3.928||
+file_extraploted_variant_plot|stem|ba8c80a47bf8c914|a488212ab9c95dcb|a173f1634238b226|144849653|output/austria-variants.png|t18990.5031768071s|6a6a331d94ac8ae3|217611|file|vector|||4.084||
+file_plot_quasibinomial_fit_ci_zoom|stem|cb8174e42cebb3af|84116a61962a0227|3cd5be743029e685|-2030679999||t18990.5032036582s|e961a0bcff3caad6|91|rds|vector|||4.179||
+multinomial_fit|stem|b101011d03b1c228|8bac0a8d21d985f8|7712292af9ab17c5|-521331782||t18990.5038019743s|f303815cd646c681|31027846|rds|vector|||119.047|Examine the pairs plot to diagnose sampling problems|
+multinomial_growth_rate|stem|dcf30c792e7021f3|0728c0f61ac19f91|05c3e3a57e099b13|-879905122||t18990.5040243291s|b45634dea951f9a1|939|rds|vector|||0.742||
+plot_multinomial_fit_zoomed|stem|39bd4e7375212049|5b132226d8eab8cb|a4815975021db31c|-1835151902||t18990.5042202494s|f501a3d1dc8ee718|56699930|rds|vector|||2.251||
+plot_multinomial_half|stem|6965e3fe4984be02|4775665b47e94476|546a3f4dd606b5e6|1818992126||t18990.504383578s|9e5cdf6950bcc077|31131253|rds|vector|||3.102||
+plot_multinomial_projection|stem|a8ec59ca1e57b5c7|fb808f0abb8243a2|0172342e13fcd185|-883026017||t18990.5046130621s|2b489a9ef653778b|69191963|rds|vector|||2.446||
+file_multinomial_zoomed|stem|2e0b79d2a8c1db52|0151e3c1fa7f5feb|d3abf429ccc6713a|-720829204|output/austria-variants-multinomial-zoom.png|t18990.5045674616s|8a39c2bf1e2258e8|228339|file|vector|||14.465|Removed 1152000 rows containing missing values geom_point.|
+plot_multinomial_growth_advantage_posterior|stem|b6dca10e6bfc42d3|b723b979bad90523|de99651c11b7dbf0|-126772648||t18990.5047999086s|9979e9f468119ad1|31177702|rds|vector|||0.293||
+file_multinomial_projection|stem|b541467b8c7ee4db|7e3a3440ed274635|fdd650fd2a1090c6|355101023|output/austria-variants-multinomial-projection.png|t18990.5048796748s|b11734800e3e86da|230990|file|vector|||5.265|Removed 468000 rows containing missing values geom_point.|
+epidemia_fit_delta|stem|7f0c1b7f5094de5a|626b03ee946662c7|262d806d69876336|-1246893380||t18990.5180116553s|75497d5e7f29a06e|10178690|rds|vector|||1348.85|Examine the pairs plot to diagnose sampling problems|
