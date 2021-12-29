@@ -3,6 +3,8 @@ source(here("R/functions/plots/utils.R"))
 #' Plots the proportion of variants among all cases assigned to variants per week
 #' 
 #' @param data Full preprocessed variant data set 
+#' 
+#' @return Ggplot object of extraploated variant proportion
 plot_extraploted_variant_proportion <- function(data) {
   labeled_variants <- c("B.1.1.529 (Omikron)")
   
@@ -23,6 +25,12 @@ plot_extraploted_variant_proportion <- function(data) {
     ggpubr::theme_pubr()
 }
 
+#' Plot an area plot of the variants proportion of the total proportion of
+#' all cases assigned to any variant. 
+#' 
+#' @param data Preprocssed data
+#' 
+#' @return Gggplot object
 plot_variants_area <- function(data) {
   data %>% 
     filter(Kalenderwoche >= as.Date("2021-04-01")) %>%
@@ -43,6 +51,12 @@ plot_variants_area <- function(data) {
     ggpubr::theme_pubr()
 }
 
+#' Plot an area plot of the proportion of cases assigned to each variant of all
+#' cases in that week. Unassigned cases will be left white/blank in the plot. 
+#' 
+#' @param data Preprocssed data 
+#' 
+#' @return Ggplot object
 plot_cases_assigned_voc <- function(data) {
   data %>% 
     mutate(prop_assigned = cases_assigned/cases_all) %>%

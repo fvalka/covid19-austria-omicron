@@ -131,10 +131,12 @@ list(
   ),
   tar_target(
     file_plot_quasibinomial_fit_ci_zoom,
-    export_plot_quasibinomial_fit_ci_zoom(data, plot_quasibinomial_fit_ci_zoom)
+    export_plot_with_title(data, plot_quasibinomial_fit_ci_zoom, "austria-variants-binomial-glm.png",
+                           subtitle = "Overdispersed binomial GLM fit\nShaded area showing 95% CI of quasibinomial model")
   ),
   tar_target(
     file_plot_quasibinomial_fit_log_odds,
-    export_plot_log_odds(data, plot_quasibinomial_log_odds)
+    export_plot_with_title(data, plot_quasibinomial_log_odds, "austria-variants-binomial-glm-log-odds.png",
+                           subtitle = "Overdispersed binomial GLM fit\nShaded area showing 95% CI of quasibinomial model")
   )
 )

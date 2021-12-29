@@ -1,3 +1,11 @@
+#' Export a plot with dimensions and DPI optimized for usage on Twitter
+#' 
+#' @param data Preprocssed data
+#' @param plot Ggplot object to export
+#' @param filename Name of the file to use for storage in the output/ folder
+#' @param subtitle Subtitle to add to the plot using [ggplot2::ggtitle()]
+#' 
+#' @return Relative output path of the stored file
 export_plot_with_title <- function(data, plot, filename="austria-variants.png", subtitle="") {
   p_enriched <- plot +
     ggtitle("SARS-CoV-2 Variants - Austria\nSequencing and targeted PCR combined", subtitle = subtitle) +

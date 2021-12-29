@@ -1,6 +1,7 @@
-#' Fit a bayesian multinomial model to the weekly AGES variant data 
+#' Fit a Bayesian multinomial GLMM with a weekly 
+#' random effect accounting for overdispersion.
 #' 
-#' Currently only supports specific variants 
+#' Currently only supports the Alpha, Delta and Omicron variants. 
 #' 
 #' @param data Preprocessed variant data 
 #' @param model_start Start date of variant data fitted in the model
@@ -33,7 +34,7 @@ fit_bayesian_multinomial_model <- function(data,
   )
 }
 
-#' Extracts the daily growth for Omicron over Delta from the bayesian multinomial model 
+#' Extracts the daily growth for Omicron over Delta from the Bayesian multinomial model 
 #' 
 #' @param fit Fit object of the bayesian multinomial model.
 #' @return Data frame with central estimates and CIs

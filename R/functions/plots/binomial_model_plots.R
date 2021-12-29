@@ -1,3 +1,11 @@
+#' Plot the classical binomial [stats::glm()] fit with confidence interval.
+#' 
+#' Uses [emmeans::emmeans()] for the response projection CI. 
+#' 
+#' @param data Preprocessed variant data
+#' @param fit GLM fit object
+#' 
+#' @return Ggplot object for the plot configuration
 plot_glm_with_ci <- function(data, fit) {
   dates <- seq(min(fit$data$date)-30, max(fit$data$date), 1)
   
@@ -22,6 +30,14 @@ plot_glm_with_ci <- function(data, fit) {
 
 }
 
+#' Plot a [stats::glm()] fit on the log-odds (logit) scale. 
+#' 
+#' Uses [emmeans::emmeans()] for projection. 
+#' 
+#' @param data Preprocssed variant data
+#' @param fit GLM fit object
+#' 
+#' @return Ggplot object of the log-odds plot with CI's
 plot_glm_log_odds <- function(data, fit) {
   dates <- seq(min(fit$data$date), max(fit$data$date), 1)
   
