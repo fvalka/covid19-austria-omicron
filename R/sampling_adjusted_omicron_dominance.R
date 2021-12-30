@@ -8,7 +8,7 @@ source(here("R/functions/model/multinomial_models.R"))
 source(here("R/functions/process_input_data.R"))
 
 process_cumulative_prop <- function(data, fit, sampling_adjust) { 
-  draw_samples_from_multinomial_fit(data, fit, ndraws = 2000) %>%
+  draw_samples_from_multinomial_fit(data, fit, ndraws = 2000, extend_days = 60) %>%
   filter(variant_full_name == "B.1.1.529 (Omikron)") %>%
   filter(prop >= 0.5) %>%
   group_by(.draw) %>%

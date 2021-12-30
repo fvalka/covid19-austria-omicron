@@ -59,7 +59,7 @@ data %>%
   rename("Date, week ending"=Kalenderwoche,
          "Assigned VOC cases"=cases_assigned,
          "All cases"=cases_all,
-         "Proportion cases assigned to VOC"=proportion_assigned) %>%
+         "Proportion cases assigned to any VOC"=proportion_assigned) %>%
   knitr::kable(caption = "Reported cases of variants of concern in Austria.") %>%
   kableExtra::column_spec(1, width = "2cm") %>%
   kableExtra::column_spec(2:8, width = "1.35cm") %>%
@@ -154,7 +154,7 @@ multiplicative_advantage_ci90_high <- (bayestestR::hdi(multiplicative_advantage,
 
 We estimate a `r sprintf("%.1f", median(multiplicative_advantage))` (90% ci `r sprintf("%.1f", multiplicative_advantage_ci90_low)` - `r sprintf("%.1f", multiplicative_advantage_ci90_high)`) multiplicative advantage of Omicron over Delta in the time-varying effective reproduction number $R_t$, assuming equal generation time distributions for Omicron and Delta. 
 
-```{r epidemia-multiplicative-advantage, warning=FALSE, out.width = '100%', fig.width=10, fig.height=4.6, dpi=150, fig.cap="Posterior of the multiplicative advantage in the effective reproduction number of Omicron over Delta, assuming equal generation time distributions. B and C, Comparison of the effective Reproduction Numbers 10 days before the last day of reported VOC cases", dev="png", message=FALSE}
+```{r epidemia-multiplicative-advantage, warning=FALSE, out.width = '100%', fig.width=10, fig.height=4.6, dpi=150, fig.cap="A) Posterior of the multiplicative advantage in the effective reproduction number of Omicron over Delta, assuming equal generation time distributions. B and C, Comparison of the effective Reproduction Numbers 10 days before the last day of reported VOC cases", dev="png", message=FALSE}
 
 
 p_multiplicative_advantage <- plot(bayestestR::hdi(multiplicative_advantage, c(0.3, 0.6, 0.9))) +
@@ -185,7 +185,8 @@ p_rt_omicron <- plot(bayestestR::hdi(rt_omicron_draws$draws[, length(rt_omicron_
   labs(x="Effective time-varying reproduction number, Rt")
 
 
-p_multiplicative_advantage | (p_rt_delta / p_rt_omicron)
+(p_multiplicative_advantage | (p_rt_delta / p_rt_omicron)) + 
+  plot_annotation(tag_levels = 'A')
 
 
 ```

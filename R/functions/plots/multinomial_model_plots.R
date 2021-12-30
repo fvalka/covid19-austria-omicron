@@ -88,36 +88,3 @@ plot_probablity_more_than_half <- function(data, fit)  {
     ggtitle("Probability of more than half Omicron cases")
   
 }
-
-
-#' Draws posterior samples from a multinomial fit object using 
-#' [tidybayes::add_epred_draws()].
-#' 
-#' @param data Preprocessed data
-#' @param fit [brms::brm()] multinomial fit
-#' @param ndraws Number of draws to draw
-#' 
-#' @return Dataframe with all draws in the .epred column
-draw_samples_from_multinomial_fit <- function(data, fit, ndraws=1000, extend_days=0) {
-  full_variant_names <- 
-    data.frame(
-      .category = c("delta", "omicron", "alpha"),
-      variant_full_name = c("B.1.617.2 (Delta)", "B.1.1.529 (Omikron)", "B.1.1.7 (Alpha)"))
-  
-  extended_dates <- 
-    data.frame(
-      Kalenderwoche =seq(min(fit$model_data$Kalenderwoche), max(fit$model_data$Kalenderwoche) + extend_days, 1)
-    ) %>%
-    mutate(days=as.numeric(Kalenderwoche))
-  
-  data %>%
-    filter(Kalenderwoche >= fit$model_start) %>%
-    full_join(extended_dates) %>%
-    arrange(Kalenderwoche) %>%
-    tidyr::fill(cases_assigned) %>%
-    mutate(days=as.numeric(Kalenderwoche)) %>%
-    tidybayes::add_epred_draws(fit$fit, ndraws = ndraws, allow_new_levels=T, re_formula = NA) %>%
-    mutate(prop = .epred/cases_assigned) %>%
-    left_join(full_variant_names)
-}
-

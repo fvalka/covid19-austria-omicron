@@ -22,7 +22,7 @@ tar_option_set(packages = c("readr", "brms", "dplyr", "ggplot2", "epidemia", "he
 list(
   tar_target(
     raw_data_file,
-    "https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2021-12-29.csv",
+    "https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2021-12-30.csv",
     format = "url"
   ),
   tar_target(
@@ -38,13 +38,31 @@ list(
     epidemia_fit_omicron, 
     epidemia_fit_variant(variants_investigated = "B.1.1.529 (Omikron)",
                          variants_all = data,
-                         min_cases = 1)
+                         min_cases = 1,
+                         generation_time = EpiEstim::discr_si(0:99, mu = 2.84, sigma = 1.9)/sum(EpiEstim::discr_si(0:99, mu = 2.84, sigma = 1.9)))
   ),
   tar_target(
     epidemia_fit_delta, 
     epidemia_fit_variant(variants_investigated = "B.1.617.2 (Delta)",
                          variants_all = data,
-                         ostart = as.Date("2021-05-01"))
+                         ostart = as.Date("2021-05-01"),
+                         generation_time = EpiEstim::discr_si(0:99, mu = 4.6, sigma = 3.1)/sum(EpiEstim::discr_si(0:99, mu = 4.6, sigma = 3.1)))
+  ),
+  tar_target(
+    scenarios_generation_times_mean_omicron,
+    c(2.84, 4.6)
+  ),
+  tar_target(
+    scenarios_generation_times_sd_omicron,
+    c(1.9, 3.1)
+  ),
+  tar_target(
+    epidemia_fit_generation_time_scenarios,
+    epidemia_generation_time_scenario(data=data,
+      gen_time_mean = scenarios_generation_times_mean_omicron, 
+      gen_time_sd = scenarios_generation_times_sd_omicron),
+    pattern = map(scenarios_generation_times_mean_omicron, scenarios_generation_times_sd_omicron),
+    iteration = "list"
   ),
   tar_target(
     binomial_fit,
