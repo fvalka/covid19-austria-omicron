@@ -7,6 +7,8 @@ spread of the Omicron (B.1.1.529) COVID-19 variant in Austria.
 
 A Bayesian multinomial GLMM is fitted to the variant of concern data from Austria 
 for estimating the growth advantage of Omicron (B.1.1.529) over Delta (B.1.617.2).
+Currently the Delta, Omicron and Alpha variants of concern are included in the GLMM, 
+since cases of those variants were reported in the investigated period. 
 
 A weekly random effect is used in the GLMM to account for overdispersion in 
 weekly case data. 
@@ -16,8 +18,9 @@ For reasoning behind this choice please see:
 
 The Bayesian multinomial GLMM is implemented using [brms](https://github.com/paul-buerkner/brms).
 
-Model sources can be found in [/R/functions/model/multinomial_models.R]([/R/functions/model/multinomial_models.R]).
+Model sources can be found in [/R/functions/model/multinomial_models.R](/R/functions/model/multinomial_models.R).
 
+Fit of the multionmial GLMM to variants in Austria. 
 ![Multinomial GLMM fit](/output/austria-variants-multinomial-zoom.png)
 
 ![Multinomial GLMM projection](output/austria-variants-multinomial-projection.png)
