@@ -109,8 +109,8 @@ multinomial_growth_rate_ci_90 <- multinomial_growth_rate %>%
   filter(CI==0.9)
 ```
 
-We estimate that Omicron (B.1.1.529) has a daily growth advantage of `r round(multinomial_growth_rate_ci_90$Median, 2)` 
-(90% ci `r round(multinomial_growth_rate_ci_90$CI_low, 2)` - `r round(multinomial_growth_rate_ci_90$CI_high, 2)`) over Delta (B.1.617.2) in Austria. 
+We estimate that Omicron (B.1.1.529) has a daily growth advantage of `r sprintf("%.2f", multinomial_growth_rate_ci_90$Median)` 
+(90% ci `r sprintf("%.2f", multinomial_growth_rate_ci_90$CI_low)` - `r sprintf("%.2f", multinomial_growth_rate_ci_90$CI_high)`) over Delta (B.1.617.2) in Austria. 
 
 ```{r multinomial-fit-zoomed, echo=FALSE, warning=FALSE, out.width = '100%', fig.width=10, fig.height=4.6, dpi=150, fig.cap="Multinomial model fit.", dev="png"}
 tar_read("plot_multinomial_fit_zoomed")
