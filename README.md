@@ -23,8 +23,55 @@ Model sources can be found in [/R/functions/model/multinomial_models.R](/R/funct
 Fit of the multionmial GLMM to variants in Austria. 
 ![Multinomial GLMM fit](/output/austria-variants-multinomial-zoom.png)
 
-![Multinomial GLMM projection](output/austria-variants-multinomial-projection.png)
+Projection based upon the multinomial GLMM.
+![Multinomial GLMM projection](/output/austria-variants-multinomial-projection.png)
 
+Since the representativeness of sampling of variant of concern cases is not 
+guaranteed we also estimated a probability of Omicron becoming dominant (more than half of all cases)
+based upon a sampling adjustment. This adjustment is 0 for representative sampling,
+meaning that none of the unsampled/unassigned cases are assumed to actually be Delta. 
+For a sampling adjustment of 1 fully targeted sampling of Omicron cases is assumed, where 
+all Omicron cases would have been found and all unsampled/unassigned cases are 
+assumed to be Delta variant cases. 
+
+Based upon this the posterior probability of Omicron being more than half of all cases is 
+calculated. 
+![Multinomial GLMM projection](/output/austria-more-than-half-omicron-sample_adj.png)
+
+## Epidemia Time-Varying Effective Reproduction-Number Model
+
+An experimental [epidemia](https://github.com/ImperialCollegeLondon/epidemia/) model
+is also included, for estimating a time-varying reproduction number based upon a 
+sampling factor introduced for accounting for the ratio of cases assigned to any 
+variant of concern to all cases in each week. 
+
+Based upon this samples are drawn from the posterior of rt for estimating a 
+multiplicative advantage between the effective time varying reproduction numbers 
+of the Delta and Omicron variants. 
+
+This model is still very experimental and under development. 
+
+## Quasibinomial GLM 
+
+A [quasibinomial](https://rdrr.io/r/stats/family.html) GLM was also implemented 
+to provide an additional cross-check for the Bayesian multinomial GLMM results. 
+
+Fit of the quasibinomial GLM 
+![Binomial GLM fit](/output/austria-variants-binomial-glm.png)
+
+Fit shown on a log-odds scale
+![Binomial GLM fit, log odds](/output/austria-variants-binomial-glm-log-odds.png)
+
+## Variant plots
+
+Various variant plots were also implemented.
+
+An area plot showing the variant cases as a proportion of all cases. 
+![Variants assigned](/output/austria-variants-assigned.png)
+
+An area plot showing th variant cases as a proportion only of the cases assigned
+to any variant of concern. 
+![Variants only](/output/austria-variants-area.png)
 
 ## Build 
 
