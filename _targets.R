@@ -50,11 +50,11 @@ list(
   ),
   tar_target(
     scenarios_generation_times_mean_omicron,
-    c(2.84, 4.6)
+    c(2.84, 4.6, 2.84, 2.84)
   ),
   tar_target(
     scenarios_generation_times_sd_omicron,
-    c(1.9, 3.1)
+    c(1.9, 3.1, 1.6, 2.2)
   ),
   tar_target(
     epidemia_fit_generation_time_scenarios,
