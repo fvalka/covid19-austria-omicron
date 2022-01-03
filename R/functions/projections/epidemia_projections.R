@@ -66,8 +66,8 @@ epidemia_project <- function(fit_reference,
   reference_newdata <- epidemia_extend_cases(fit = fit_reference, extend_days = extend_days)
   new_variant_newdata <- epidemia_extend_cases(fit = fit_new_variant, extend_days = extend_days)
   
-  reference_pred <- epidemia_projection_cases_generator(fit_reference)
-  new_variant_pred <- epidemia_projection_cases_generator(fit_new_variant)
+  reference_pred <- predictor(fit_reference, newdata = reference_newdata)
+  new_variant_pred <- predictor(fit_new_variant, newdata = new_variant_newdata)
   
   t_fill <- length(reference_pred$time) - length(new_variant_pred$time)
   draws <- dim(reference_pred$draws)[1]

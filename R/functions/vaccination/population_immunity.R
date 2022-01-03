@@ -1,3 +1,9 @@
+
+#' Fit a logistc regression model to VE study results 
+#' 
+#' @param ve_file CSV file of extracted VE estimates
+#' @param days Number of days to predict based upon the fit
+#' @param start_day First day of vaccine effectiveness 
 estimate_ve_from_study <- function(ve_file, days, start_day = 7) {
   ve_study_data <- read_csv(ve_file) %>%
     mutate(t=t_start + (t_end - t_start)/2) %>%
@@ -15,12 +21,13 @@ estimate_ve_from_study <- function(ve_file, days, start_day = 7) {
                 rename(ve_original_data=ve))
 }
 
-
-estimate_population_immunity <- function(vaccination_data) {
+#' Estimate the time evolution of population immunity levels
+#' for Omicron
+estimate_population_immunity <- function(vaccination_data,
+                                         infection_estimate = 0.24,
+                                         bnt_bnt_ve,
+                                         bnt_bnt_bnt_ve) {
   pop_austria <- 8932664
-  
-  bnt_bnt_ve <- estimate_ve_from_study(here("data/ve_data/bnt_dose_2.csv"), length(vaccination_data$date), start_day = 14)
-  bnt_bnt_bnt_ve <- estimate_ve_from_study(here("data/ve_data/bnt_bnt_boost.csv"), length(vaccination_data$date))
   
   unvaccinated_data <- vaccination_data %>% 
     filter(state_id != 10) %>%
@@ -77,7 +84,6 @@ estimate_population_immunity <- function(vaccination_data) {
       
     }
     
-    infection_estimate <- 0.24
     infection_protection <- 0.19
     
     immunity_dose_3 <- sum(dose_status$dose_3 * rev(bnt_bnt_bnt_ve$ve[1:length(dose_status$date)])) # No increase for prior infection

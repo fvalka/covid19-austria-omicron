@@ -1,3 +1,6 @@
+source(here("R/functions/plots/ggplot2_step_ribbon.R"))
+source(here("R/functions/projections/epidemia_projections.R"))
+
 #' Plot a combined plot of Rt, cases, extrapolated cases and daily infections
 #' 
 #' @param Enriched epidemia fit
@@ -49,7 +52,7 @@ plot_epidemia_projection <- function(data,
                                      fit_reference, 
                                      fit_new_variant, 
                                      projection, 
-                                     cases_ems, 
+                                     cases_ems = NULL, 
                                      start_date = as.Date("2021-10-14"),
                                      by_100k = T,
                                      annotate_max_cases = T,
@@ -67,7 +70,6 @@ plot_epidemia_projection <- function(data,
            upper =  upper * data_scaling_factor) %>%
     ggplot(aes(x=date)) +
     geom_ribbon(aes(ymin= lower, ymax=upper, alpha=factor(level), fill=group)) +
-    geom_point(data=cases_ems, aes(x=Time, y=AnzahlFaelle7Tage * data_scaling_factor, color="All observed cases"), stat="identity") +
     geom_vline(xintercept = max(data$Kalenderwoche), linetype="dashed") +
     ggpubr::theme_pubr() +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
@@ -78,7 +80,12 @@ plot_epidemia_projection <- function(data,
     scale_x_date(date_breaks = "week") +
     coord_cartesian(xlim = c(start_date, NA), ylim = ylim)
   
-  if(annotate_max_cases) {
+  if(!is.null(cases_ems)) {
+    plot_result <- plot_result + 
+      geom_point(data=cases_ems, aes(x=Time, y=AnzahlFaelle7Tage * data_scaling_factor, color="All observed cases"), stat="identity")
+  }
+  
+  if(annotate_max_cases & !is.null(cases_ems)) {
     plot_result <- plot_result  +
       annotate("rect", xmin = start_date, 
                xmax = max(projection$quantiles$date), 
@@ -131,11 +138,23 @@ plot_epidemia_generation_time_scenarios <- function(data, fits,
     labs(x="Date", y="Daily infections per 100k", fill="Variant", alpha="CrI") 
 }
 
-function() {
-  newdata <-  epidemia_extend_cases(fit = fit, extend_days = 30)
+plot_epidemia_rt_projection <- function(fit, extend_days = 30, ci_levels=c(30, 60, 90)) {
+  newdata <-  epidemia_extend_cases(fit = fit, extend_days = extend_days)
   
-  plot_rt(fit$fit, newdata=newdata, levels=c(30, 60, 90)) +
-    coord_cartesian(xlim = c(fit$epi_params$ostart, NA) + 14)
+  rt_projections <- epidemia::posterior_rt(fit$fit, newdata=newdata)
+  
+  rt_quantiles <- get_quantiles(rt_projections, levels=ci_levels)  
+  
+  rt_quantiles %>% 
+    ggplot(aes(x=date)) +
+    geom_stepribbon(aes(ymin= lower, ymax=upper, alpha=factor(level), fill=group)) +
+    geom_hline(yintercept = 1, linetype="dashed", alpha=0.6) +
+    scale_x_date(limits = c(as.Date("2021-12-15"), max(newdata$date))) +
+    ggsci::scale_fill_nejm(limits=unique(data$variant)) +
+    scale_alpha_manual(values = rev(c(0.3, 0.5, 0.7)), limits=factor(c(30, 60, 90))) +
+    ggpubr::theme_pubr() +
+    labs(x="Date", y="Reproduction number", fill="Variant", alpha="CrI") 
+  
 }
 
 plot_epidemia_scenarios <- function() {

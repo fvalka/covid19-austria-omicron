@@ -23,7 +23,6 @@ library(kableExtra)
 
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_knit$set(root.dir = here())
-#knitr::opts_chunk$set(fig.pos = "!H", out.extra = "")
 
 source(here("R/functions/plots/epidemia_plots.R"))
 
@@ -125,6 +124,7 @@ We therefore ignore any Delta cases until April 2021.
 - First doses are assumed to provide no protection from infection with the Omicron variant. (realistic)
 - People who have been previously infected are equally likely to get vaccinated. (uncertain)
 - Immunity to the Omicron variant does not increase in the projected period. (uncertain)
+- Second doses have an effect after 14 days and third doses have an effect after 7 days. (realistic)
 
 # Projected dynamics of the Omicron variant
 
@@ -162,6 +162,10 @@ for the Omicron variant.
 
 ### Immunity assumption
 
+Estimates of the vaccine effectiveness against the Omicron variant are based upon the 
+results of the UKHSA test negative case control study. [@ukhealthsecurityagencyOmicronVOC21NOV015292021]
+A logistic regression is fitted to the vaccine effectiveness study estimaes, as shown in figure \@ref(fig:assumed-ve).
+
 Based upon the assumptions outlined above and an assumed 19% protection from previous infection, without vaccination, 
 and 24% previous infections in the population we assume that on the 14th of November 2021 85% of the 
 population was susceptible, decreasing with the booster vaccination campaign to 68% by the 2nd of January 2022. 
@@ -179,19 +183,45 @@ These projections are based upon the assumptions above for cases for Omicron and
 A constant infections ascertainment ratio is assumed for cases here, whereas actual case numbers
 will likely be limited by testing capacity. 
 
-The projection with central assumptions is shown in figure \@ref(fig:central-projection).
+The projection with central assumptions is shown in figure \@ref(fig:central-projection) 
+estimates of the time-varying reproduction number, $R_t$, and projections of daily 
+infections are shown in figure \@ref(fig:central-projection-rt-infections).
 
 ```{r}
 epidemia_fit_omicron <- tar_read("epidemia_fit_omicron")
 epidemia_fit_delta <- tar_read("epidemia_fit_delta")
 epidemia_projection_central <- tar_read("epidemia_projection_central")
+epidemia_projection_central_infections <- tar_read("epidemia_projection_central_infections")
 cases_ems_austria <- tar_read("cases_ems_austria")
 ```
 
-```{r, central-projection, warning=FALSE, out.width = '100%', fig.width=13, fig.height=6, dpi=150, fig.cap="Central projection estimate of cases for the Omicron and Delta variant. All observed cases shown as reported in the Austrian epidemiological surveillance system (EMS). Dashed line shows last day of data included in the fit. Grey area shows case numbers above previously observed case numbers, any actual observations in this region are likely to be affected by a reduction in ascertainment due to limited testing capacity.", dev="png"}
+```{r, central-projection, warning=FALSE, out.width = '100%', fig.width=13, fig.height=6, dpi=150, fig.cap="Central scenario projection of cases for the Omicron and Delta variant. All observed cases shown as reported in the Austrian epidemiological surveillance system (EMS). Dashed line shows last day of data included in the fit. Grey area shows case numbers above previously observed case numbers, any actual observations in this region are likely to be affected by a reduction in ascertainment due to limited testing capacity.", dev="png"}
 plot_epidemia_projection(data, epidemia_fit_delta, epidemia_fit_omicron, 
                          epidemia_projection_central, cases_ems_austria, 
                          ylim = c(0, 1e4))
+```
+
+```{r, central-projection-rt-infections, warning=FALSE, out.width = '100%', fig.width=13, fig.height=6, dpi=150, fig.cap="A and B) Estimates of the time-varying reproduction number for (A) Omicron and (B) Delta. C) Projected daily infections per 100k population.", dev="png", message=FALSE}
+
+p_rt_omicron <- plot_epidemia_rt_projection(epidemia_fit_omicron) + 
+           ggtitle("Reproduction number, Omicron (B.1.1.529)")+
+     coord_cartesian(ylim=c(0, 4))
+     
+p_rt_delta <-plot_epidemia_rt_projection(epidemia_fit_delta) + 
+     ggtitle("Reproduction number, Delta (B.1.617.2)") +
+     coord_cartesian(ylim=c(0, 4))
+
+p_infections <- plot_epidemia_projection(data, epidemia_fit_delta, epidemia_fit_omicron, 
+                         epidemia_projection_central_infections, 
+                         ylim = c(0, 1e4)) +
+  ggtitle("Daily infections") +
+  labs(y="Daily infections per 100k") +
+  coord_cartesian(xlim = c(as.Date("2021-12-15"), NA))
+
+guide_area() / ((p_rt_omicron / p_rt_delta) | p_infections) + 
+  plot_layout(guides = "collect", heights = c(2, 10)) + 
+  plot_annotation(tag_levels = 'A')
+
 ```
 
 ## Scenarios 
@@ -209,7 +239,7 @@ assumption for the parameters of the generation time distribution of Omicron.
 Both the incubation period and immunity in the population were fixed at the 
 central scenario assumptions. 
 
-```{r, generation-time-scenarios, out.width="100%", fig.width=13, fig.height=6, dpi=150, fig.cap="Project daily infections for various assumptions of the generation distribution.", dev="png"}
+```{r, generation-time-scenarios, out.width="100%", fig.width=13, fig.height=6, dpi=150, fig.cap="Projected daily infections for various assumptions of parameters of the generation distribution.", dev="png"}
 tar_read("epidemia_generation_time_scenarios_plot")
 ```
 
@@ -266,8 +296,6 @@ Figures \@ref(fig:epidemia-full-omicron-fit) and \@ref(fig:epidemia-full-delta-f
 fit for each variant. 
 
 ```{r}
-epidemia_fit_omicron <- tar_read("epidemia_fit_omicron")
-epidemia_fit_delta <- tar_read("epidemia_fit_delta")
 ```
 
 ```{r, epidemia-full-omicron-fit, echo=FALSE, warning=FALSE, message=FALSE, out.width = '80%', fig.width=10, fig.height=7, fig.align = 'center', dpi=150, fig.cap="", dev="png", fig.cap="Full model fit"}
@@ -280,12 +308,37 @@ plot_epidemia_full_combination(epidemia_fit_delta) +
   plot_annotation(title="Delta (B.1.617.2)")
 ```
 
+# Vaccine effectiveness assumptions
+
+A logit model based waning of vaccine effectivness over time is assumed. 
+
+```{r, assumed-ve, warning=FALSE, message=FALSE, out.width = '75%', fig.width=8, fig.height=4, fig.align = 'center', dpi=150, fig.cap="", dev="png", fig.cap="Assumed immunity to the Omicron variant"}
+plot_ve <- function(ve_data) {
+  ve_data %>%
+  filter(t < 300) %>%
+  ggplot(aes(x=t)) +
+  geom_line(aes(color="Model", y=ve)) +
+  geom_point(aes(color="Study", y=ve_original_data)) +
+  scale_y_continuous(labels = scales::percent) +
+  ggsci::scale_color_npg() +
+  ggpubr::theme_pubr() +
+  labs(x="Days after last dose",
+       y="Vaccine effectiveness",
+       color=NULL)
+}
+
+plot_ve(tar_read("bnt_bnt_ve")) +
+  ggtitle("2x BNT162b2") |
+plot_ve(tar_read("bnt_bnt_bnt_ve")) +
+  ggtitle("3x BNT162b2")
+```
+
 # Assumed population immunity against Omicron
 
 Figure \@ref(fig:pop-immunity-omicron) shows the assumed immunity to the Omicron variant 
 based upon the VE data. 
 
-```{r, pop-immunity-omicron, out.width = '60%', fig.width=8, fig.height=4, fig.align = 'center', dpi=150, fig.cap="", dev="png", fig.cap="Assumed immunity to the Omicron variant"}
+```{r, pop-immunity-omicron, out.width = '75%', fig.width=8, fig.height=4, fig.align = 'center', dpi=150, fig.cap="", dev="png", fig.cap="Assumed immunity to the Omicron variant"}
 epidemia_fit_omicron$original_data %>%
   mutate(immune=1-susceptible) %>%
   ggplot(aes(x=date, y=immune)) +
