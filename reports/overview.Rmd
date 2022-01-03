@@ -1,7 +1,7 @@
 ---
 title: "Exploratory Analysis of the Spread of the SARS-CoV-2 Omicron (B.1.1.529) Variant in Austria"
 author: "Fabian Valka"
-date: 20th of December 2021
+date: 30th of December 2021
 output: bookdown::pdf_document2
 bibliography: ["../bibliography/fabian_valka.bib"]
 ---
@@ -201,6 +201,7 @@ plot_epidemia_fit <- function(fit) {
     ggtitle("Reproduction Number")
   
   epidemia_delta_obs <- epidemia::plot_obs(fit$fit, type = "cases", levels = c(50, 95))  + 
+    scale_y_continuous(labels = sitools::f2si) +
     ggpubr::theme_pubr() + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     ggtitle("Weekly assigned cases")
@@ -210,11 +211,13 @@ plot_epidemia_fit <- function(fit) {
            levels = c(50, 95), 
            newdata = fit$original_data %>%
              mutate(sampled=1)) +
+    scale_y_continuous(labels = sitools::f2si) +
     ggtitle("Weekly extrapolated cases") +
     ggpubr::theme_pubr() + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
   
   epidemia_delta_infections <- epidemia::plot_infections(fit$fit) + 
+    scale_y_continuous(labels = sitools::f2si) +
     ggpubr::theme_pubr() + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     ggtitle("Daily infections")

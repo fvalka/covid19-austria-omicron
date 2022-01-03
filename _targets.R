@@ -11,19 +11,39 @@ source("R/functions/model/epidemia_models.R")
 source("R/functions/model/binomial_models.R")
 source("R/functions/model/multinomial_models.R")
 
+# Vaccinations
+source("R/functions/vaccination/population_immunity.R")
+
+# Projections
+source("R/functions/projections/epidemia_projections.R")
+
+# Scenarios
+source("R/functions/scenarios/epidemia_scenarios.R")
+
 # Visualization/Plots
 source("R/functions/plots/proportion_plots.R")
 source("R/functions/plots/twitter_plots.R")
 source("R/functions/plots/binomial_model_plots.R")
 source("R/functions/plots/multinomial_model_plots.R")
+source("R/functions/plots/epidemia_plots.R")
 
 options(tidyverse.quiet = TRUE)
 tar_option_set(packages = c("readr", "brms", "dplyr", "ggplot2", "epidemia", "here", "emmeans"))
 list(
   tar_target(
     raw_data_file,
-    "https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2021-12-30.csv",
+    "https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2022-01-03.csv",
     format = "url"
+  ),
+  tar_target(
+    raw_ems_case_file,
+    "data/CovidFaelle_Timeline.csv",
+    format = "file"
+  ),
+  tar_target(
+    raw_vaccination_data_file,
+    "data/COVID19_vaccination_doses_timeline.csv",
+    format = "file"
   ),
   tar_target(
     raw_data,
@@ -35,11 +55,26 @@ list(
     process_variant_data(raw_data)
   ),
   tar_target(
+    cases_ems_austria,
+    process_ems_cases(raw_ems_case_file)
+  ),
+  tar_target(
+    vaccination_data,
+    read_csv2(raw_vaccination_data_file)
+  ),
+  tar_target(
+    pop_immunity_estimate,
+    estimate_population_immunity(vaccination_data)
+  ),
+  tar_target(
     epidemia_fit_omicron, 
-    epidemia_fit_variant(variants_investigated = "B.1.1.529 (Omikron)",
-                         variants_all = data,
-                         min_cases = 1,
-                         generation_time = EpiEstim::discr_si(0:99, mu = 2.84, sigma = 1.9)/sum(EpiEstim::discr_si(0:99, mu = 2.84, sigma = 1.9)))
+    epidemia_generation_time_scenario(data = data,
+                                      variants_investigated = "B.1.1.529 (Omikron)",
+                                      min_cases = 1,
+                                      gen_time_mean = 3.13,
+                                      gen_time_sd = 2.22,
+                                      i2o_cases = epidemia_param_data$i2o_omicron_si_shortened,
+                                      pop_immunity = pop_immunity_estimate)
   ),
   tar_target(
     epidemia_fit_delta, 
@@ -49,18 +84,34 @@ list(
                          generation_time = EpiEstim::discr_si(0:99, mu = 4.6, sigma = 3.1)/sum(EpiEstim::discr_si(0:99, mu = 4.6, sigma = 3.1)))
   ),
   tar_target(
+    epidemia_projection_central, 
+    epidemia_project(epidemia_fit_delta,
+                     epidemia_fit_omicron,
+                     extend_days = 30)
+  ),
+  tar_target(
+    epidemia_projection_central_infections,
+    epidemia_project(epidemia_fit_delta,
+                     epidemia_fit_omicron,
+                     extend_days = 30,
+                     predictor = epidemia_projection_infections_generator)
+  ),
+  tar_target(
     scenarios_generation_times_mean_omicron,
-    c(2.84, 4.6, 2.84, 2.84)
+    c(3.13, 4.6, 3.13, 2.84, 2.84, 2.22)
   ),
   tar_target(
     scenarios_generation_times_sd_omicron,
-    c(1.9, 3.1, 1.6, 2.2)
+    c(2.22, 3.1, 1.6, 1.6, 2.2, 1.57)
   ),
   tar_target(
     epidemia_fit_generation_time_scenarios,
     epidemia_generation_time_scenario(data=data,
       gen_time_mean = scenarios_generation_times_mean_omicron, 
-      gen_time_sd = scenarios_generation_times_sd_omicron),
+      gen_time_sd = scenarios_generation_times_sd_omicron,
+      min_cases = 1,
+      i2o_cases = epidemia_param_data$i2o_omicron_si_shortened,
+      pop_immunity = pop_immunity_estimate),
     pattern = map(scenarios_generation_times_mean_omicron, scenarios_generation_times_sd_omicron),
     iteration = "list"
   ),
@@ -79,6 +130,10 @@ list(
   tar_target(
     multinomial_growth_rate,
     extract_bayesian_multinomial_growth_rate(multinomial_fit)
+  ),
+  tar_target(
+    epidemia_generation_time_scenarios_plot,
+    plot_epidemia_generation_time_scenarios(data, epidemia_fit_generation_time_scenarios)
   ),
   tar_target(
     plot_quasibinomial_fit_ci_zoom,

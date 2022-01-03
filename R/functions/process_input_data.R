@@ -23,6 +23,12 @@ process_variant_data <- function(raw_input_data) {
     purrr::pmap_dfr(~ estimate_proportion(..1, ..2, ..3, ..4, ..5))
 }
 
+process_ems_cases <- function(file) {
+  read_csv2(file) %>%
+    filter(BundeslandID==10) %>%
+    mutate(Time=as.Date(lubridate::dmy_hms(Time)))
+}
+
 
 estimate_proportion <- function(Kalenderwoche, cases_all, variant,  cases, cases_assigned) {
   binom_estimate <- binom.test(cases, cases_assigned)

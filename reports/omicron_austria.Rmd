@@ -1,0 +1,300 @@
+---
+title: "Spread of the SARS-CoV-2 Omicron (B.1.1.529) Variant in Austria"
+author: "Fabian Valka"
+date: 3rd of January 2022
+output: 
+  bookdown::pdf_document2:
+    extra_dependencies: ["float"]
+header-includes:
+  - \usepackage{float}
+  - \usepackage[section]{placeins}
+bibliography: ["../bibliography/fabian_valka.bib"]
+csl: "../bibliography/nature.csl"
+---
+
+```{r setup, include=FALSE}
+library(targets)
+library(dplyr)
+library(ggplot2)
+library(here)
+library(gt)
+library(patchwork)
+library(kableExtra)
+
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_knit$set(root.dir = here())
+#knitr::opts_chunk$set(fig.pos = "!H", out.extra = "")
+
+source(here("R/functions/plots/epidemia_plots.R"))
+
+```
+
+# Variant tracking in Austria
+
+## Surveillance system
+
+Austria performs both variant specific PCR testing on positive PCR samples, as well as sequencing. 
+Sequencing is split up into two parts with sentinel surveillance for new variants and 
+targeted sequencing of specific variants assigned in variant specific PCR sampling [@SARSCov2VariantenOesterreich; @holzerStrategieZurVirusvariantensurveillance].
+
+Combined results of the variant specific PCR testing are published as weekly 
+whole-country aggregated case counts by VOC in an online report [@SARSCov2VariantenOesterreich]. 
+
+It is not clearly specified whether the report includes cases by reporting or lab diagnosis date, 
+but since later reports always include increases in VOC cases in previous weeks it is assumed that 
+the VOC cases are grouped into weeks by original lab diagnosis date, similar to other case data 
+published in Austria. The report is based upon the variant specified in the Austrian epidemiological tracking system (EMS).
+
+## Variants tracked in Austria
+
+Austria currently tracks the variants shown in table \@ref(tab:variantstracked) [@SARSCov2VariantenOesterreich; @holzerStrategieZurVirusvariantensurveillance].
+
+
+| WHO Label | Pango Lineage | PCR Screening | Sequenced when found in PCR | Data Available |
+|-----------|---------------|---------------|-----------------------------|----------------|
+| Alpha     | B.1.1.7       | No            | No                          | Yes            |
+| Beta      | B.1.351       | Yes           | Yes                         | Yes            |
+| Gamma     | P.1           | Yes           | Yes                         | Yes            |
+| Delta     | B.1.617.2     | Yes           | No                          | Yes            |
+| Omicron   | B.1.1.529     | Yes           | Yes                         | Yes            |
+
+Table: (\#tab:variantstracked) Variants tracked in Austria. Data available refers to the number of variants detected being reported online in the AGES variant surveillance report. "PCR Screening" and "Sequenced when found in PCR" as defined by the guidelines of the Austrian health ministry (Bundesministerium Soziales, Gesundheit, Pflege und Konsumentenschutz) as of the 20th of December 2021, last updated on the 1st of December 2021 [@holzerStrategieZurVirusvariantensurveillance].
+
+```{r}
+data <-  tar_read("data")
+
+data %>%
+  filter(Kalenderwoche >= as.Date("2021-11-01")) %>%
+  select(Kalenderwoche, variant, cases, cases_all, cases_assigned) %>%
+  reshape2::dcast(Kalenderwoche + cases_all + cases_assigned ~ variant, value.var = "cases") %>%
+  mutate(proportion_assigned = scales::percent(cases_assigned/cases_all, accuracy = 0.1)) %>%
+  select(Kalenderwoche, `B.1.1.7 (Alpha)`, `B.1.351 (Beta)`, 
+         `P.1 (Gamma)`, `B.1.617.2 (Delta)`, `B.1.1.529 (Omikron)`,
+         cases_assigned, cases_all, proportion_assigned) %>%
+  rename("Date, week ending"=Kalenderwoche,
+         "Assigned VOC cases"=cases_assigned,
+         "All cases"=cases_all,
+         "Proportion cases assigned to any VOC"=proportion_assigned) %>%
+  knitr::kable(caption = "Reported cases of variants of concern in Austria.") %>%
+  kableExtra::column_spec(1, width = "2cm") %>%
+  kableExtra::column_spec(2:8, width = "1.35cm") %>%
+  kableExtra::column_spec(9, width = "1.5cm")
+
+```
+
+Currently according to the variant data cases have already been assigned to the Delta variant already in January 2021, but this is likely a 
+mistake in the data, since the definition of the Delta variant has been changed to also include
+N501 positive cases with no further specification. During the period of Alpha replacing 
+wild type cases this would likely unintentionally include wild type cases as Delta cases [@SARSCov2VariantenOesterreich].
+We therefore ignore any Delta cases until April 2021. 
+
+# Assumptions
+
+## Model assumptions
+- **All results are projections for scenarios in which we estimate the outcomes given the assumptions and not forecasts**
+- **We investigate the scenario of what would happen if Omicron dynamics continuing to grow as they currently are and no further non pharmaceutical interventions or behavioral changes are introduced. **
+- In the main analysis we assume a different generation time distribution and incubation time distribution for the Omicron variant compared to the Delta variant. 
+- Omicron will replace Delta and no new variants are introduced within the investigated period.
+
+## Variant cases and sampling assumptions
+
+- Representative sampling for testing with variant specific PCR among all positive PCR tests. (pessimistic)
+  - This assumption might especially be violated in the early phase of the Omicron variants spread in Austria since targeted testing on people with a travel history to southern Africa has been performed. Also more targeted contact tracing efforts and preferred testing of suspected Omicron cases could violate this assumption for early Omicron case reports. 
+- All samples are one of the tracked variants of concern. (realistic)
+  - No numbers are provided for the total number of samples tested. 
+    It is assumed that the total number of samples tested is the sum of all variant of concern cases reported. 
+- Representative sampling for regions within Austria. (uncertain)
+  - Currently weekly data about VOC cases are only available for Austria as a whole.
+
+## Previous immunity and vaccine effectiveness assumptions
+
+- The protection from infection is assumed to be equal to the protection from symptomatic disease. (optimistic)
+- Vaccine effectiveness for Omicron is assumed to be equal to 2 or 3 doses of BNT162b2 in the whole population. (optimistic)
+  - Most vaccine doses administered are BTN162b2 and ChadOx1 has mostly been used in the early phase of the vaccination campaign 
+  it is therefore assumed that many already either had a heterologous vaccination with ChadOx1 and and mRNA vaccine or been boosted. 
+- An infection before or after vaccination leads to an increase in 
+  immunity equal to one additional dose of vaccine (realistic), except for booster doses, where 
+  no further increase is assumed (pessimistic). 
+- Any infection happens before the latest vaccination dose, and 
+  waning therefore always is calculated based upon the date of the latest vaccine dose. (pessimistic)
+- Among people with a first vaccine dose we assume a 95% pick-up of second doses. 
+  For people who have received two doses we assume an 80% pick-up of third doses. (uncertain)
+- People who have received their previous dose the longest ago will first receive the next 
+  dose. Except for people who don't pick up their next dose. (optimistic)
+- All doses wane based upon a logistic function fitted to published vaccine effectiveness estimates. (uncertain)
+- First doses are assumed to provide no protection from infection with the Omicron variant. (realistic)
+- People who have been previously infected are equally likely to get vaccinated. (uncertain)
+- Immunity to the Omicron variant does not increase in the projected period. (uncertain)
+
+# Projected dynamics of the Omicron variant
+
+## Methods
+
+### Model description
+
+We fit two Bayesian regression model one to reported cases of Delta in Austria and a second one to reported Omicron cases. A sampling factor is introduced which is used to link cases to infections using a different time delay distribution for each variant. The sampling factor is defined as the proportion of cases assigned to any VOC to all cases in each week. Additionally an infection ascertainment ratio (IAR) estimate is used as the prior for the sampling factor. Based upon previous modeling a fixed IAR of 0.6 is used. Currently no representative PCR sampling or
+current and representative seroprevalence studies could be found for estimation of the IAR.  
+
+The model is built using the epidemia R package (version `r packageVersion("epidemia")`). 
+
+Infections are seeded for 6 days starting two weeks before the first cases were reported for Omicron and two weeks before the 1st of May 2021 for Delta. A weekly random walk is used in the predictor of $R_t$. In addition change points, where larger changes in $R_t$ are expected, have been added for various dates where major NPIs have been implemented, on the 1st of April 2021, 8th of November 2021, 15th of November 2021 and 22nd of November 2021. 
+
+### Generation time distribution
+
+Based upon comparing the serial interval of 2.22 (± 1.62) days reported for Omicron in South Korea [@SerialIntervalBasic] 
+to the serial interval of 3.26 days (95% credible interval, 2.92–3.60) recently reported 
+for Delta in South Korea [@hwangTransmissionDynamicsDelta2021] we assume a 32% reduction
+in the mean and standard deviation of the generation time from Delta to Omicron. 
+
+For the Delta variant we assume the shape of a discretized gamma distribution [@coriNewFrameworkSoftware2013]
+with a mean of 4.6 days and a standard deviation of 3.1 days [@hartGenerationTimeAlpha2021].
+Based upon the assumption above for Omicron we use a generation time distribution with a mean of
+3.13 days and a standard deviation of 2.22 days.
+
+### Incubation period time distribution
+
+For Delta we assume a gamma distributed incubation time distribution as previously reported for 
+wild type with a mean of 5.22 days and a standard deviation of 2.54 days. [@zhangEvolvingEpidemiologyTransmission2020]
+
+In analogy to the reduction of the generation time distribution for the central scenario 
+we assume a reduction in the incubation period to 3.56 days and a standard deviation of 2.10 days 
+for the Omicron variant.
+
+### Immunity assumption
+
+Based upon the assumptions outlined above and an assumed 19% protection from previous infection, without vaccination, 
+and 24% previous infections in the population we assume that on the 14th of November 2021 85% of the 
+population was susceptible, decreasing with the booster vaccination campaign to 68% by the 2nd of January 2022. 
+
+To account for the uncertainty around those estimates samples for the proportion of the susceptibility 
+of the population are drawn from a normal distribution with a mean of 64% and a standard
+deviation of 10%. 
+
+With waning of second doses and early booster doses we already assume a stagnation in immunity 
+to Omicron from the new year. 
+
+## Results
+
+These projections are based upon the assumptions above for cases for Omicron and Delta variant cases. 
+A constant infections ascertainment ratio is assumed for cases here, whereas actual case numbers
+will likely be limited by testing capacity. 
+
+The projection with central assumptions is shown in figure \@ref(fig:central-projection).
+
+```{r}
+epidemia_fit_omicron <- tar_read("epidemia_fit_omicron")
+epidemia_fit_delta <- tar_read("epidemia_fit_delta")
+epidemia_projection_central <- tar_read("epidemia_projection_central")
+cases_ems_austria <- tar_read("cases_ems_austria")
+```
+
+```{r, central-projection, warning=FALSE, out.width = '100%', fig.width=13, fig.height=6, dpi=150, fig.cap="Central projection estimate of cases for the Omicron and Delta variant. All observed cases shown as reported in the Austrian epidemiological surveillance system (EMS). Dashed line shows last day of data included in the fit. Grey area shows case numbers above previously observed case numbers, any actual observations in this region are likely to be affected by a reduction in ascertainment due to limited testing capacity.", dev="png"}
+plot_epidemia_projection(data, epidemia_fit_delta, epidemia_fit_omicron, 
+                         epidemia_projection_central, cases_ems_austria, 
+                         ylim = c(0, 1e4))
+```
+
+## Scenarios 
+
+### Generation time scenarios 
+
+Since the generation time distribution is unclear, with some early evidence of a shorter serial interval. [@SerialIntervalBasic] 
+
+The generation time distribution has been varied by assuming different mean, $\mu$,
+and standard deviation, $\sigma$, variants for the discretized gamma distribution. 
+Where a mean of 4.6 days and standard deviation of 3.1 days match the assumptions for the Delta variant
+and a mean of 3.13 days and standard deviation of 2.22 days is the central 
+assumption for the parameters of the generation time distribution of Omicron. 
+
+Both the incubation period and immunity in the population were fixed at the 
+central scenario assumptions. 
+
+```{r, generation-time-scenarios, out.width="100%", fig.width=13, fig.height=6, dpi=150, fig.cap="Project daily infections for various assumptions of the generation distribution.", dev="png"}
+tar_read("epidemia_generation_time_scenarios_plot")
+```
+
+# Multinomial growth advantage of Omicron over Delta
+
+```{r}
+
+multinomial_fit <- tar_read("multinomial_fit")
+
+```
+
+## Methods
+
+A Bayesian multinomial GLMM was specified using brms (version `r packageVersion("brms")`). Variant of concern data starting from the 1st of September 2021 for the following variants were included: Alpha (B.1.1.7), Delta (B.1.617.2) and Omicron (B.1.1.529) At the beginning of September 3 samples of Gamma (P.1) were also reported and 1 sample of Beta (B.1.351). Detection of other variants of concern has not been reported in Austria in the time period from `r multinomial_fit$model_start` to `r max(multinomial_fit$model_data$Kalenderwoche)`. Estimates of CIs are Bayesian credible intervals estimated using highest density intervals. 
+
+A simple model structure with one growth rate and intercept per variant was used. An observation-level random effect was added to account for overdispersion[@harrisonUsingObservationlevelRandom2014] in the VOC case data. Delta (B.1.617.2) was used as the reference variant for the model since it was detected over the whole time period. <!--Results were compared in a sensitivity analysis to methods previously published using multinom from nnet and obtaining relative growth rates using emtrends from emmeans, these were in agreement with the Bayesian model. Usage of splines in the nnet model also resulted in a slightly worse BIC and were therefore not used. --> 
+
+## Results
+
+```{r}
+multinomial_growth_rate <- tar_read("multinomial_growth_rate")
+
+multinomial_growth_rate_ci_90 <- multinomial_growth_rate %>% 
+  filter(CI==0.9)
+```
+
+We estimate that Omicron (B.1.1.529) has a daily growth advantage of `r sprintf("%.2f", multinomial_growth_rate_ci_90$Median)` 
+(90% ci `r sprintf("%.2f", multinomial_growth_rate_ci_90$CI_low)` - `r sprintf("%.2f", multinomial_growth_rate_ci_90$CI_high)`) over Delta (B.1.617.2) in Austria. 
+
+```{r multinomial-fit-zoomed, echo=FALSE, warning=FALSE, out.width = '80%', fig.align="center", fig.width=10, fig.height=4.6, dpi=150, fig.cap="Multinomial model fit.", dev="png"}
+tar_read("plot_multinomial_fit_zoomed")
+```
+
+
+
+```{r multinomial-growth-posterior, out.width = '80%', fig.align="center", fig.width=10, fig.height=4.6, dpi=150, fig.cap="A: Estimated growth advantage of Omicron over Delta. B: Probability of Omicron making up half or more of the cases assigned to any variant.", dev="png"}
+(tar_read("plot_multinomial_growth_advantage_posterior") | tar_read("plot_multinomial_half")) + plot_annotation(tag_levels = 'A')
+```
+
+
+# (APPENDIX) Appendix {-}
+
+# Variant sampling in Austria
+
+There have historically been large changes in the proportion of cases assigned to a VOC among all cases reported in Austria. Based upon sentinel full genome sequencing it can still be concluded that expect for the initial growth of Alpha over wild type infections one of the tracked VOCs was dominant in the respective time range. 
+
+```{r cases-assigned-voc, warning=FALSE, out.width = '100%', fig.width=10, fig.height=4.6, dpi=150, fig.cap="Proportion of cases assigned to each variant of all cases reported.", dev="png"}
+tar_read("plot_assigned")
+```
+
+# Full model fits to variant cases
+
+Figures \@ref(fig:epidemia-full-omicron-fit) and \@ref(fig:epidemia-full-delta-fit) show the full model
+fit for each variant. 
+
+```{r}
+epidemia_fit_omicron <- tar_read("epidemia_fit_omicron")
+epidemia_fit_delta <- tar_read("epidemia_fit_delta")
+```
+
+```{r, epidemia-full-omicron-fit, echo=FALSE, warning=FALSE, message=FALSE, out.width = '80%', fig.width=10, fig.height=7, fig.align = 'center', dpi=150, fig.cap="", dev="png", fig.cap="Full model fit"}
+plot_epidemia_full_combination(epidemia_fit_omicron) +
+  plot_annotation(title="Omicron (B.1.1.529)")
+```
+
+```{r, epidemia-full-delta-fit, echo=FALSE, warning=FALSE, message=FALSE, out.width = '80%', fig.width=10, fig.height=7, fig.align = 'center', dpi=150, fig.cap="", dev="png", fig.cap="Full model fit"}
+plot_epidemia_full_combination(epidemia_fit_delta) +
+  plot_annotation(title="Delta (B.1.617.2)")
+```
+
+# Assumed population immunity against Omicron
+
+Figure \@ref(fig:pop-immunity-omicron) shows the assumed immunity to the Omicron variant 
+based upon the VE data. 
+
+```{r, pop-immunity-omicron, out.width = '60%', fig.width=8, fig.height=4, fig.align = 'center', dpi=150, fig.cap="", dev="png", fig.cap="Assumed immunity to the Omicron variant"}
+epidemia_fit_omicron$original_data %>%
+  mutate(immune=1-susceptible) %>%
+  ggplot(aes(x=date, y=immune)) +
+  geom_line() +
+  scale_y_continuous(labels = scales::percent, limits=c(0, 1)) +
+  ggpubr::theme_pubr() +
+  labs(x="Date", 
+       y="Assumed immunity against Omicron")
+```
+
+A large increase in immunity can be seen due to the Booster vaccination campaign 
+falling largely into the time period of Omicron introduction and establishment. 
