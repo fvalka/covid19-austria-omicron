@@ -1,13 +1,22 @@
 ---
 title: "Spread of the SARS-CoV-2 Omicron (B.1.1.529) Variant in Austria"
-author: "Fabian Valka"
-date: 3rd of January 2022
+author: 
+- name: "Fabian Valka"
+  email: "fvalka@vektorraum.com"
+  affiliation: Vektorraum
+date: 5th of January 2022
 output: 
   bookdown::pdf_document2:
     extra_dependencies: ["float"]
 header-includes:
   - \usepackage{float}
   - \usepackage[section]{placeins}
+  - |
+    ```{=latex}
+    \usepackage{authblk}
+    \author{Fabian Valka \\ fvalka@vektorraum.com}
+    \affil{vektorraum}
+    ```
 bibliography: ["../bibliography/fabian_valka.bib"]
 csl: "../bibliography/nature.csl"
 ---
@@ -35,10 +44,10 @@ source(here("R/functions/plots/epidemia_plots.R"))
 
 Austria performs both variant specific PCR testing on positive PCR samples, as well as sequencing. 
 Sequencing is split up into two parts with sentinel surveillance for new variants and 
-targeted sequencing of specific variants assigned in variant specific PCR sampling [@SARSCov2VariantenOesterreich; @holzerStrategieZurVirusvariantensurveillance].
+targeted sequencing of specific variants assigned in variant specific PCR sampling. [@SARSCov2VariantenOesterreich; @holzerStrategieZurVirusvariantensurveillance]
 
 Combined results of the variant specific PCR testing are published as weekly 
-whole-country aggregated case counts by VOC in an online report [@SARSCov2VariantenOesterreich]. 
+whole-country aggregated case counts by variant of concern (VOC) in an online report. [@SARSCov2VariantenOesterreich]
 
 It is not clearly specified whether the report includes cases by reporting or lab diagnosis date, 
 but since later reports always include increases in VOC cases in previous weeks it is assumed that 
