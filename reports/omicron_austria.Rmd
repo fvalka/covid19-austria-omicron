@@ -14,6 +14,7 @@ csl: "../bibliography/nature.csl"
 
 ```{r setup, include=FALSE}
 library(targets)
+library(readr)
 library(dplyr)
 library(ggplot2)
 library(here)
@@ -81,7 +82,7 @@ data %>%
 
 ```
 
-Currently according to the variant data cases have already been assigned to the Delta variant already in January 2021, but this is likely a 
+Currently according to the variant data cases have already been assigned to the Delta variant in January 2021, but this is likely a 
 mistake in the data, since the definition of the Delta variant has been changed to also include
 N501 positive cases with no further specification. During the period of Alpha replacing 
 wild type cases this would likely unintentionally include wild type cases as Delta cases [@SARSCov2VariantenOesterreich].
@@ -132,7 +133,7 @@ We therefore ignore any Delta cases until April 2021.
 
 ### Model description
 
-We fit two Bayesian regression model one to reported cases of Delta in Austria and a second one to reported Omicron cases. A sampling factor is introduced which is used to link cases to infections using a different time delay distribution for each variant. The sampling factor is defined as the proportion of cases assigned to any VOC to all cases in each week. Additionally an infection ascertainment ratio (IAR) estimate is used as the prior for the sampling factor. Based upon previous modeling a fixed IAR of 0.6 is used. Currently no representative PCR sampling or
+We fit two Bayesian regression model [@flaxmanEstimatingEffectsNonpharmaceutical2020] one to reported cases of Delta in Austria and a second one to reported Omicron cases. A sampling factor is introduced which is used to link cases to infections using a different time delay distribution for each variant. The sampling factor is defined as the proportion of cases assigned to any VOC to all cases in each week. Additionally an infection ascertainment ratio (IAR) estimate is used as the prior for the sampling factor. Based upon previous modeling a fixed IAR of 0.6 is used. Currently no representative PCR sampling or
 current and representative seroprevalence studies could be found for estimation of the IAR.  
 
 The model is built using the epidemia R package (version `r packageVersion("epidemia")`). 
@@ -151,7 +152,7 @@ with a mean of 4.6 days and a standard deviation of 3.1 days [@hartGenerationTim
 Based upon the assumption above for Omicron we use a generation time distribution with a mean of
 3.13 days and a standard deviation of 2.22 days.
 
-### Incubation period time distribution
+### Incubation period time distribution {#methods-incubation}
 
 For Delta we assume a gamma distributed incubation time distribution as previously reported for 
 wild type with a mean of 5.22 days and a standard deviation of 2.54 days. [@zhangEvolvingEpidemiologyTransmission2020]
@@ -160,15 +161,27 @@ In analogy to the reduction of the generation time distribution for the central 
 we assume a reduction in the incubation period to 3.56 days and a standard deviation of 2.10 days 
 for the Omicron variant.
 
+### Infection to case observation time distribution
+
+Cases in the model are linked to infections through an infection to observation time 
+distribution. This is based upon the assumed incubation period for each variant 
+combined with a time from symptom onset to reported lab diagnosis.
+
+The time differences between symptom onset and first positive lab test for COVID-19 cases was estimated
+from anonymized line-list data from the Austrian epidemiological surveillance system (EMS). 
+Time differences between the 1st of June and 22nd of October 2020 were included in the estimation.
+The resulting combined distribution is shown in figure \@ref(fig:i2o-delta-omicron).
+
 ### Immunity assumption
 
-Estimates of the vaccine effectiveness against the Omicron variant are based upon the 
-results of the UKHSA test negative case control study. [@ukhealthsecurityagencyOmicronVOC21NOV015292021]
-A logistic regression is fitted to the vaccine effectiveness study estimaes, as shown in figure \@ref(fig:assumed-ve).
+Estimates of the vaccine effectiveness against infection are based upon vaccine effectiveness against
+symptomatic disease for the Omicron variant from results of the UKHSA test negative case control study. [@ukhealthsecurityagencyOmicronVOC21NOV015292021]
+A logistic regression is fitted to the vaccine effectiveness study estimates, as shown in figure \@ref(fig:assumed-ve).
 
 Based upon the assumptions outlined above and an assumed 19% protection from previous infection, without vaccination, 
 and 24% previous infections in the population we assume that on the 14th of November 2021 85% of the 
 population was susceptible, decreasing with the booster vaccination campaign to 68% by the 2nd of January 2022. 
+The daily number of vaccine doses administered in Austria [@bmsgpkCOVID19ZeitreiheVerabreichten] is shown in figure \@ref(fig:vaccine-doses-austria).
 
 To account for the uncertainty around those estimates samples for the proportion of the susceptibility 
 of the population are drawn from a normal distribution with a mean of 64% and a standard
@@ -224,9 +237,7 @@ guide_area() / ((p_rt_omicron / p_rt_delta) | p_infections) +
 
 ```
 
-## Scenarios 
-
-### Generation time scenarios 
+## Generation time scenarios 
 
 Since the generation time distribution is unclear, with some early evidence of a shorter serial interval. [@SerialIntervalBasic] 
 
@@ -308,11 +319,41 @@ plot_epidemia_full_combination(epidemia_fit_delta) +
   plot_annotation(title="Delta (B.1.617.2)")
 ```
 
-# Vaccine effectiveness assumptions
+# Immunity and vaccinations
 
-A logit model based waning of vaccine effectivness over time is assumed. 
+## Timeline of vaccinations in Austria
 
-```{r, assumed-ve, warning=FALSE, message=FALSE, out.width = '75%', fig.width=8, fig.height=4, fig.align = 'center', dpi=150, fig.cap="", dev="png", fig.cap="Assumed immunity to the Omicron variant"}
+Figure \@ref(fig:vaccine-doses-austria) shows the 7-day moving average of 
+daily doses of vaccines administered in Austria by manufacturer. [@bmsgpkCOVID19ZeitreiheVerabreichten] 
+
+This data is used in the estimation of the immunity against infection 
+with the omicron variant. 
+
+```{r, vaccine-doses-austria, warning=FALSE, message=FALSE, out.width = '100%', fig.width=13, fig.height=6, fig.align = 'center', dpi=150, fig.cap="", dev="png", fig.cap="Moving average (7-day) of vaccine doses administered in Austria, by manufacturer."}
+vaccination_data <- tar_read("vaccination_data")
+
+vaccination_data %>% 
+  filter(state_id != 10) %>%
+  group_by(date, dose_number, vaccine) %>%
+  summarise(doses_administered_cumulative=sum(doses_administered_cumulative)) %>%
+  group_by(dose_number, vaccine) %>%
+  mutate(doses_daily_change = doses_administered_cumulative - lag(doses_administered_cumulative, 1)) %>%
+  mutate(doses_daily_change_7d = RcppRoll::roll_meanr(doses_daily_change, 7)) %>%
+  ggplot(aes(x=date, y=doses_daily_change_7d, color=factor(dose_number))) +
+  geom_line() +
+  facet_wrap(~ vaccine) +
+  ggpubr::theme_pubr() + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(y="Daily doses, 7-day moving average", 
+       color="Dose")
+```
+
+## Vaccine effectiveness against infection assumptions
+
+A logit model based waning of vaccine effectivness 
+against infection with Omicron over time is assumed. 
+
+```{r, assumed-ve, warning=FALSE, message=FALSE, out.width = '75%', fig.width=8, fig.height=4, fig.align = 'center', dpi=150, fig.cap="", dev="png", fig.cap="Assumed vaccine effectivness against infection with the Omicron variant."}
 plot_ve <- function(ve_data) {
   ve_data %>%
   filter(t < 300) %>%
@@ -333,9 +374,9 @@ plot_ve(tar_read("bnt_bnt_bnt_ve")) +
   ggtitle("3x BNT162b2")
 ```
 
-# Assumed population immunity against Omicron
+## Assumed population immunity against infection with Omicron
 
-Figure \@ref(fig:pop-immunity-omicron) shows the assumed immunity to the Omicron variant 
+Figure \@ref(fig:pop-immunity-omicron) shows the assumed immunity against infection with the Omicron variant 
 based upon the VE data. 
 
 ```{r, pop-immunity-omicron, out.width = '75%', fig.width=8, fig.height=4, fig.align = 'center', dpi=150, fig.cap="", dev="png", fig.cap="Assumed immunity to the Omicron variant"}
@@ -351,3 +392,35 @@ epidemia_fit_omicron$original_data %>%
 
 A large increase in immunity can be seen due to the Booster vaccination campaign 
 falling largely into the time period of Omicron introduction and establishment. 
+
+# Time distributions
+
+## Infection to case observation
+
+The assumed infection to case observation time distribution, obtained from combining the 
+incubation time distribution and case to lab diagnosis time distribution is shown in 
+figure \@ref(fig:i2o-delta-omicron).
+
+The combined distribution was obtained by calculating the time delay from symptom onset
+to case, by lab diagnosis date, taken from an anonymized line-listing. Random samples were
+then drawn from an empirical distribution function of the time delay days obtained 
+from this dataset using the R package EnvStats. Those were combined with random 
+samples drawn from a gamma distribution assumed for the incubation period period 
+as described in section \@ref(methods-incubation). 
+
+```{r, i2o-delta-omicron, out.width='75%', fig.align="center", fig.width=8, fig.height=3, fig.cap="Assumed infection to observation time distributions for Delta and Omicron", warning=FALSE, message=FALSE}
+i2o_delta <- read_csv(here("data/i2o/i2o_cases.csv"))
+i2o_omicron <- read_csv(here("data/i2o/i2o_cases_omicron.csv"))
+
+i2o_delta %>%
+  ggplot(aes(x=t, y=i2o)) +
+  geom_line(aes(color="Delta (B.1.617.2)")) +
+  geom_line(data=i2o_omicron, aes(color="Omicron (B.1.1.529)")) +
+  coord_cartesian(xlim = c(0,30)) +
+  ggpubr::theme_pubr() +
+  labs(x="Days since infection",
+       y=NULL,
+       color=NULL)
+```
+
+# References
