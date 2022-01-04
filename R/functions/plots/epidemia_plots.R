@@ -15,7 +15,6 @@ plot_epidemia_full_combination <- function(fit, ci_levels=c(30, 60, 90)) {
     labs(y="Effective reproduction number")
   
   plot_obs <- epidemia::plot_obs(fit$fit, type = "cases", levels = ci_levels)  + 
-    scale_y_continuous(labels = sitools::f2si) +
     ggpubr::theme_pubr() + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     ggtitle("Weekly assigned cases") +
@@ -26,7 +25,6 @@ plot_epidemia_full_combination <- function(fit, ci_levels=c(30, 60, 90)) {
                                               levels = ci_levels, 
                                               newdata = fit$original_data %>%
                                                 mutate(sampled=1)) +
-    scale_y_continuous(labels = sitools::f2si) +
     ggtitle("Weekly extrapolated cases") +
     ggpubr::theme_pubr() + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
@@ -34,7 +32,6 @@ plot_epidemia_full_combination <- function(fit, ci_levels=c(30, 60, 90)) {
   
   plot_infections <- epidemia::plot_infections(fit$fit, 
                                                levels = ci_levels) + 
-    scale_y_continuous(labels = sitools::f2si) +
     ggpubr::theme_pubr() + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
     ggtitle("Daily infections") +
