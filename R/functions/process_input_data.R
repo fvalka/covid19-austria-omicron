@@ -5,6 +5,7 @@ library(readr)
 process_variant_data <- function(raw_input_data) {
   variant_cases <- raw_input_data %>% 
     select(-filename) %>%
+    mutate(Kalenderwoche = stringr::str_replace(Kalenderwoche, "2021-W", "")) %>%
     filter(!is.na(as.numeric(Kalenderwoche))) %>%
     reshape2::melt(id.vars=c("Kalenderwoche", "Fälle gesamt"),
                    variable.name="variant",
