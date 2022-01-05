@@ -16,15 +16,47 @@ scenarios_generation_times_mean_omicron|stem|8a576adc84234d3a|1622cb25ab3058c2|a
 scenarios_generation_times_sd_omicron|stem|c8d9536ac2a160dc|464dea90ad7da286|a3dad144c40657ed|-807108985||t18995.5129857288s|c852eab37a726e04|78|rds|vector||scenarios_generation_times_sd_omicron_6f1042d0*scenarios_generation_times_sd_omicron_b3c18597*scenarios_generation_times_sd_omicron_ce49553a*scenarios_generation_times_sd_omicron_ce49553a_1*scenarios_generation_times_sd_omicron_7a200e81*scenarios_generation_times_sd_omicron_cd33d923|3.017||
 raw_vaccination_data_file|stem|85f442ba4f782840|87f2247cd9efb28a|ef46db3751d8e999|143219624|data/COVID19_vaccination_doses_timeline.csv|t18995.3453125s|2ea6ea8e3e7eefdd|3405314|file|vector|||2.821||
 vaccination_data|stem|d9044cb9c6f15e64|c1b149d958644716|7db5cf779e789000|1512963784||t18995.587903418s|84793a9fb5d67c9f|154851|rds|vector|||3.305||
-raw_ems_case_file|stem|f3fa48c9f1929f6d|d617eff074165848|ef46db3751d8e999|-415127701|data/CovidFaelle_Timeline.csv|t18995.5662152778s|48b8b689ab732731|525739|file|vector|||2.577||
-cases_ems_austria|stem|e0f477212fc34b04|902e1d5c1433e153|957f6fdfcd36b883|1194357580||t18995.7401370159s|779ddeb10f76b211|19951|rds|vector|||0.175||
 bnt_bnt_bnt_ve|stem|65a6bcabcd80575b|2f1e6d7411e00839|0552ca43aedbc887|1356047989||t18995.7466831684s|75277441a8a8bf62|163460|rds|vector|||3.128||
 bnt_bnt_ve|stem|45362a7eefa2c9d8|ba8c62b3317fa7ce|0552ca43aedbc887|1088037109||t18995.7467992298s|b742d00aafdb28e6|157331|rds|vector|||13.017||
 pop_immunity_estimate|stem|75928907584ededf|0b0c465c97d15c62|d173279340e9248a|408265098||t18995.7475527728s|410787eedf220285|814|rds|vector|||63.451||
-raw_data_file|stem|e29f2e9d56e6d181|94b9e2077b32a4a6|ef46db3751d8e999|2110307107|https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2022-01-04.csv|t18996.6319060955s||0|url|vector|||2.726||
-raw_data|stem|1698d38890398ce2|67dc4edba086ba1a|d67093cced657f89|-979620141||t18996.631966057s|9d0b71d7308478d8|1268|rds|vector|||3.972||
-file_raw_data_export|stem|604a6503a659ae48|db6ebd2cdad83e63|f5c56899bd2d25f1|-506327921|data/ages_varianten/Varianten_nach_KWs_2022-01-04.csv|t18996.632012352s|d4bac0f9d053ad58|1653|file|vector|||2.83||
-data|stem|b94b5de28117574a|b4f6e1ed87270214|c73a68b2b9d93f97|1588979285||t18996.6364371312s|3c8914ee9fa8e04d|6156|rds|vector|||2.819||
+raw_ems_case_file|stem|af3f6239073a12b7|d617eff074165848|ef46db3751d8e999|-415127701|data/CovidFaelle_Timeline.csv|t18996.5662268519s|28686295e714995e|526577|file|vector|||2.747||
+raw_data_file|stem|b02843560ef3bde3|94b9e2077b32a4a6|ef46db3751d8e999|2110307107|https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2022-01-04.csv|t18997.0012298622s||0|url|vector|||2.784||
+raw_data|stem|5d731fc75fd6eb11|67dc4edba086ba1a|a6e0ed508de60b8b|-979620141||t18997.0012813708s|4942d91646dd93bc|978|rds|vector|||3.256||
+file_raw_data_export|stem|1903876b1533ec27|db6ebd2cdad83e63|d28277ed15ffef97|-506327921|data/ages_varianten/Varianten_nach_KWs_2022-01-04.csv|t18997.0013280824s|4bd2df2f3e23065a|1079|file|vector|||2.866||
+data|stem|b96e58a11ef2a426|b4f6e1ed87270214|3277ec9d72b41220|1588979285||t18997.0013298416s|8df74cbd10416ac5|3739|rds|vector|||2.96||
+plot_assigned|stem|9f60265c89def9fb|8bbce6ebda797e42|e46d1a923cf5cda0|-1481610266||t18997.0013794235s|bab11966939955a2|91367|rds|vector|||2.874||
+cases_ems_austria|stem|579f1cdb9aacf239|902e1d5c1433e153|a5255b1b237abe30|1194357580||t18997.0013986359s|08f206040ec40128|19972|rds|vector|||13.334||
+plot_omicron_proportion_assigned|stem|8b4d48299e4b48c6|8cba6e61469bed3f|608ba2326e0907ca|-1532890737||t18997.0014645136s|31e896b399a7a932|136677|rds|vector|||5.266||
+epidemia_fit_generation_time_scenarios_4f8b08cc|branch|71509860aabbab59|be1f628c1723de1c|a638e6733376d737|1014845796||t18997.0029045647s|9a13f0beedc9b81c|4945749|rds|list|epidemia_fit_generation_time_scenarios||114.64|i2o does not sum to one. Please ensure this is intentional.|
+epidemia_fit_generation_time_scenarios_a20fc85d|branch|a8867447b3ca1f7a|be1f628c1723de1c|c94f124b5901f589|881064635||t18997.0029878493s|02b4ecb5adacd17a|4946886|rds|list|epidemia_fit_generation_time_scenarios||132.833|Examine the pairs plot to diagnose sampling problems|
+epidemia_fit_omicron|stem|8787e2ccc2a91fa2|8401386c40c54428|ffa267f193b98161|529236947||t18997.0030656248s|23f734c0dbeeff36|4946832|rds|vector|||145.864|Examine the pairs plot to diagnose sampling problems|
+epidemia_fit_generation_time_scenarios_e1dab066|branch|7ee4b295dc5a9f9b|be1f628c1723de1c|708ce785c81ba95f|-164261073||t18997.0044526681s|757494861397237c|4945983|rds|list|epidemia_fit_generation_time_scenarios||128.293|i2o does not sum to one. Please ensure this is intentional.|
+epidemia_fit_generation_time_scenarios_95b552d3|branch|130d13a1bdd901c6|be1f628c1723de1c|8f5d414a3271d14d|-1442160494||t18997.0047215029s|b69ba4caa83f2d97|4946037|rds|list|epidemia_fit_generation_time_scenarios||141.816|i2o does not sum to one. Please ensure this is intentional.|
+file_extraploted_variant_plot|stem|370ef68c5066ee21|a488212ab9c95dcb|b1a4495cc8e73269|144849653|output/austria-variants.png|t18997.0048326571s|b916d73ad23ca723|228953|file|vector|||5.98||
+epidemia_fit_generation_time_scenarios_3606fe68|branch|245d884dfd60e4cb|be1f628c1723de1c|f9eb80cd259e486f|-811442707||t18997.0048881648s|957ac70a615e3b5e|4948023|rds|list|epidemia_fit_generation_time_scenarios||152.814|i2o does not sum to one. Please ensure this is intentional.|
+plot_variants_area_zoomed|stem|536c744d4bdb5f1c|d4276cf8893d4260|5369b32b35ed65d9|1832408261||t18997.0049273766s|8dd9bec27807fda4|136836|rds|vector|||5.575||
+file_all_assigned_plot|stem|cd932266b4100f86|c4a875d9206ce786|d00404682ab36500|1277880924|output/austria-variants-assigned.png|t18997.0049684402s|4a4d24c236421ff1|149028|file|vector|||4.963||
+file_variants_area_plot|stem|6cdb3b5be0c3d5ef|505b2cf85d5f447e|b31f4766ec8cc0a8|-772879215|output/austria-variants-area.png|t18997.0050107075s|9146c48b1a63722f|193987|file|vector|||5.083||
+binomial_fit|stem|a7eba485b4524428|7b0d685ba276f90b|8f2dbffbed4e865b|-497983523||t18997.0057014283s|20ec06f3a8208aeb|24612282|rds|vector|||49.562||
+epidemia_fit_generation_time_scenarios_d8e3489a|branch|ed6897dab9c30340|be1f628c1723de1c|2b583d5ba1be8500|-1300257151||t18997.0057537879s|d1878afa4cb12f3c|4950080|rds|list|epidemia_fit_generation_time_scenarios||108.043|i2o does not sum to one. Please ensure this is intentional.|
+epidemia_fit_generation_time_scenarios|pattern|0061044de6b7ba54|be1f628c1723de1c||1416263392||||29682758|rds|list||epidemia_fit_generation_time_scenarios_a20fc85d*epidemia_fit_generation_time_scenarios_4f8b08cc*epidemia_fit_generation_time_scenarios_e1dab066*epidemia_fit_generation_time_scenarios_95b552d3*epidemia_fit_generation_time_scenarios_3606fe68*epidemia_fit_generation_time_scenarios_d8e3489a|778.439||
+quasibinomial_fit|stem|12691eb7d65f1842|af07f1b3b0019389|b0bf2f4579e26b61|1375958462||t18997.0058138325s|81e0557509f36fd5|7241|rds|vector|||3.148||
+plot_quasibinomial_fit_ci_zoom|stem|bef668457663c87e|4b6d74f055c153ee|11fa6d5d09c8a29d|1625061591||t18997.0058664698s|fa209fd528862989|145770|rds|vector|||3.014||
+file_plot_quasibinomial_fit_ci_zoom|stem|cb8174e42cebb3af|07f78a2b9d6882f7|27da61ae607aab0d|-2030679999||t18997.0059389677s|e961a0bcff3caad6|91|rds|vector|||4.351||
+plot_quasibinomial_log_odds|stem|b5418b753f13bc33|07ce511de0550d60|36671211634d7b9a|782611902||t18997.0059970216s|218131e7bc490c90|92019|rds|vector|||3.386||
+file_plot_quasibinomial_fit_log_odds|stem|95e832a467e56646|20f2e9a9189d43c6|0b5f39d51bf33f81|259986559||t18997.0060535014s|887021b347b02e8f|100|rds|vector|||3.184||
+epidemia_generation_time_scenarios_plot|stem|0514278036575f72|daa4e63585ddea66|692850c1f77f319e|191881057||t18997.0061484524s|90b02ff4948be8a0|32068664|rds|vector|||9.83||
+multinomial_fit|stem|0609829d00e053ea|8bac0a8d21d985f8|b6c2920828dead9b|-521331782||t18997.0068050538s|cfe52b2ef311ef5b|31249909|rds|vector|||143.343||
+plot_multinomial_fit_zoomed|stem|36b95793e5084d84|5b132226d8eab8cb|e38e89d5afc22a40|-1835151902||t18997.0072440688s|5d4d01245332d3fa|58521553|rds|vector|||2.32||
+plot_multinomial_projection|stem|0652bb9948e62281|fb808f0abb8243a2|70df0feda91e8dfb|-883026017||t18997.0075410973s|fa3e48296d7cd1c0|70933439|rds|vector|||2.842||
+plot_multinomial_growth_advantage_posterior|stem|b86d1ef03d2e73cd|b723b979bad90523|5f864fb3bbd66a65|-126772648||t18997.0077373416s|5410b8bfeff7d167|31400148|rds|vector|||0.281||
+file_multinomial_zoomed|stem|54673dc052107769|0151e3c1fa7f5feb|5e3c243361e89812|-720829204|output/austria-variants-multinomial-zoom.png|t18997.0076017437s|5e3de380b7a054af|251625|file|vector|||14.707|Removed 1224000 rows containing missing values geom_point.|
+file_multinomial_projection|stem|bf505364eff8672b|7e3a3440ed274635|e5a956c693da7ae2|355101023|output/austria-variants-multinomial-projection.png|t18997.0078206262s|ee58357f3c90362c|230717|file|vector|||5.812|Removed 486000 rows containing missing values geom_point.|
+multinomial_growth_rate|stem|cdc9987bac2eb4ba|0728c0f61ac19f91|5dacd7ab49639461|-879905122||t18997.0079127532s|4319217378e1ad46|956|rds|vector|||0.741||
+plot_multinomial_half|stem|be3517062852d224|4775665b47e94476|2bb59ae5727c7e6d|1818992126||t18997.0080323794s|689c180423670647|31350858|rds|vector|||3.016||
+epidemia_fit_delta|stem|988e3a684efa5747|2625b02041a94047|c20252c0511c264b|-1246893380||t18997.0137514729s|0693c24c80f2044d|9479458|rds|vector|||1069.875|Examine the pairs plot to diagnose sampling problems|
+epidemia_projection_central|stem|1371d5904580b817|f0a2dd0d1b7271c6|c1d830766ddd7e5e|-1580524482||t18997.0138825339s|64d075995862e254|986076|rds|vector|||2.478||
+epidemia_projection_central_infections|stem|8599e66ad0e5a12a|4b665f0b1163c1b5|c346a350840779df|59862551||t18997.0139090146s|a1abdf794351f915|8917406|rds|vector|||2.613||
 determine_zoom_y_limit|function|0e79a546261f32af||||||||||||||
 estimate_proportion|function|6942fa722422c2f8||||||||||||||
 plot_glm_log_odds|function|b6398f3c1104c8ea||||||||||||||
@@ -43,7 +75,7 @@ epidemia_projection_infections_generator|function|12f6c2df8a70d23f||||||||||||||
 process_ems_cases|function|cc491363312ac870||||||||||||||
 binomial_model_data_convert|function|ce552f4dadc9ab03||||||||||||||
 plot_multinomial_weekly_fold_increase|function|b2047c51baa10c92||||||||||||||
-plot_epidemia_full_combination|function|70f9f54718625ce9||||||||||||||
+plot_epidemia_full_combination|function|761b117562046e2a||||||||||||||
 draw_samples_from_multinomial_fit|function|cdb60da85fe57f29||||||||||||||
 estimate_ve_from_study|function|f2a4461680e14987||||||||||||||
 GeomStepribbon|object|46a3664f6103421c||||||||||||||
@@ -66,35 +98,3 @@ plot_multinomial_fit|function|d5a0a6ebe15ad876||||||||||||||
 geom_stepribbon|function|d1cd3b087f3b7f80||||||||||||||
 epidemia_generation_time_scenario|function|18bb441146c75f43||||||||||||||
 plot_epidemia_rt_projection|function|36407e26823efc49||||||||||||||
-plot_assigned|stem|0c5b1635ca9515a7|8bbce6ebda797e42|c76ff93d23e5dd08|-1481610266||t18996.6368508229s|25f888739aec99ea|98505|rds|vector|||2.957||
-plot_omicron_proportion_assigned|stem|af9d543243301fee|8cba6e61469bed3f|0e7cc4ae03dd51f1|-1532890737||t18996.6368526284s|fe156bbebd72dfd0|140633|rds|vector|||2.993||
-plot_variants_area_zoomed|stem|2b43744398c70863|d4276cf8893d4260|6604b1321991c6ae|1832408261||t18996.636854619s|e6fa4b54d881ce63|140782|rds|vector|||3.002||
-file_extraploted_variant_plot|stem|ca92cc0232183c97|a488212ab9c95dcb|2e14e02d3880e286|144849653|output/austria-variants.png|t18996.6369067472s|cc3960e35bde2c07|229919|file|vector|||3.331||
-epidemia_fit_generation_time_scenarios_4f8b08cc|branch|c7e8a670d382979c|be1f628c1723de1c|7d7ffb90602c492e|1014845796||t18996.6384401281s|f646918e3711ac58|4948403|rds|list|epidemia_fit_generation_time_scenarios||124.049|i2o does not sum to one. Please ensure this is intentional.|
-epidemia_fit_omicron|stem|8596ac86011d9907|8401386c40c54428|e8336abbc919a41c|529236947||t18996.6384995245s|6b563f1dcff24899|4949550|rds|vector|||137.912|Examine the pairs plot to diagnose sampling problems|
-epidemia_fit_generation_time_scenarios_a20fc85d|branch|c444e2e96723110c|be1f628c1723de1c|b570f713803fff0d|881064635||t18996.6385465139s|bd207ca96e693754|4949495|rds|list|epidemia_fit_generation_time_scenarios||141.9|Examine the pairs plot to diagnose sampling problems|
-epidemia_fit_generation_time_scenarios_e1dab066|branch|ea59cedcab82d156|be1f628c1723de1c|548337f100c12008|-164261073||t18996.6399657777s|944759486a2241d2|4948645|rds|list|epidemia_fit_generation_time_scenarios||124.875|i2o does not sum to one. Please ensure this is intentional.|
-epidemia_fit_generation_time_scenarios_95b552d3|branch|becb8752e787d83d|be1f628c1723de1c|3d848fbc2ee20dd5|-1442160494||t18996.6401996135s|c37289419603fd64|4948634|rds|list|epidemia_fit_generation_time_scenarios||141.433|i2o does not sum to one. Please ensure this is intentional.|
-file_variants_area_plot|stem|f4827a7fece92d02|505b2cf85d5f447e|aa4900854a1103c6|-772879215|output/austria-variants-area.png|t18996.6403012308s|eff3227c2e7976be|195781|file|vector|||5.8||
-epidemia_fit_generation_time_scenarios_3606fe68|branch|388875a39a467d82|be1f628c1723de1c|1d5178c62389b214|-811442707||t18996.6403385909s|92c47b4c2873bca1|4950771|rds|list|epidemia_fit_generation_time_scenarios||150.169|i2o does not sum to one. Please ensure this is intentional.|
-file_all_assigned_plot|stem|496002296b63c48f|c4a875d9206ce786|0d2772134f69f73a|1277880924|output/austria-variants-assigned.png|t18996.6403955336s|07641e244700cf88|154963|file|vector|||5.763||
-binomial_fit|stem|eeb7f5e3408c4891|7b0d685ba276f90b|0459aac2446a326a|-497983523||t18996.6411165773s|455806fa110dcfdd|24612456|rds|vector|||52.113||
-quasibinomial_fit|stem|25d783f6dc83d873|af07f1b3b0019389|cca91b2d1ecb3b97|1375958462||t18996.6411866678s|2d4888931a06e126|11177|rds|vector|||4.185||
-epidemia_fit_generation_time_scenarios_d8e3489a|branch|e960a14dcee33368|be1f628c1723de1c|cdb2cead391fe900|-1300257151||t18996.6412454624s|3df820dfc20bdc23|4953474|rds|list|epidemia_fit_generation_time_scenarios||106.165|i2o does not sum to one. Please ensure this is intentional.|
-epidemia_fit_generation_time_scenarios|pattern|91698bac25c1614e|be1f628c1723de1c||1416263392||||29699422|rds|list||epidemia_fit_generation_time_scenarios_a20fc85d*epidemia_fit_generation_time_scenarios_4f8b08cc*epidemia_fit_generation_time_scenarios_e1dab066*epidemia_fit_generation_time_scenarios_95b552d3*epidemia_fit_generation_time_scenarios_3606fe68*epidemia_fit_generation_time_scenarios_d8e3489a|788.591||
-plot_quasibinomial_fit_ci_zoom|stem|f90da146b031ed00|4b6d74f055c153ee|39f3225558968986|1625061591||t18996.6413055996s|7320c7339470af90|155369|rds|vector|||3.584||
-file_plot_quasibinomial_fit_ci_zoom|stem|cb8174e42cebb3af|07f78a2b9d6882f7|8d8f442e42417bcb|-2030679999||t18996.6413637923s|e961a0bcff3caad6|91|rds|vector|||3.365||
-plot_quasibinomial_log_odds|stem|8419dd36cb2e28eb|07ce511de0550d60|14a0566d3ff9aa79|782611902||t18996.6414160593s|520e448935842f7b|101920|rds|vector|||3.036||
-file_plot_quasibinomial_fit_log_odds|stem|95e832a467e56646|20f2e9a9189d43c6|93b94fe6a0ac6a87|259986559||t18996.6414750853s|887021b347b02e8f|100|rds|vector|||3.374||
-epidemia_generation_time_scenarios_plot|stem|b9b1ce69d1efd669|daa4e63585ddea66|58c7aae262ffbc41|191881057||t18996.6416191089s|681332def299199c|32081338|rds|vector|||9.714||
-multinomial_fit|stem|142f0890e028eca1|8bac0a8d21d985f8|8e104dc5c3aeab3f|-521331782||t18996.6422570069s|7db7e6cff599e9cb|31250471|rds|vector|||149.411||
-plot_multinomial_growth_advantage_posterior|stem|48b55464cba3c7fb|b723b979bad90523|340e4c60c8317e2b|-126772648||t18996.6425907471s|361f71c5433e995c|31400722|rds|vector|||0.286||
-plot_multinomial_fit_zoomed|stem|416a5a61cf160d6e|5b132226d8eab8cb|516eabc769748083|-1835151902||t18996.6428061575s|e522e6193cfc1c92|58522087|rds|vector|||2.328||
-plot_multinomial_projection|stem|1041e88764d02dd9|fb808f0abb8243a2|665bf3bad5466466|-883026017||t18996.6431012414s|46a77081257f9727|70936779|rds|vector|||2.804||
-multinomial_growth_rate|stem|cdc9987bac2eb4ba|0728c0f61ac19f91|928a89cb500b5092|-879905122||t18996.6432387374s|4319217378e1ad46|956|rds|vector|||0.746||
-file_multinomial_zoomed|stem|54673dc052107769|0151e3c1fa7f5feb|0c62f5103a078463|-720829204|output/austria-variants-multinomial-zoom.png|t18996.6431655914s|5e3de380b7a054af|251625|file|vector|||14.738|Removed 1224000 rows containing missing values geom_point.|
-file_multinomial_projection|stem|bf505364eff8672b|7e3a3440ed274635|befdd6696eee4ee4|355101023|output/austria-variants-multinomial-projection.png|t18996.6433861868s|ee58357f3c90362c|230717|file|vector|||6.163|Removed 486000 rows containing missing values geom_point.|
-plot_multinomial_half|stem|586eb8435e1f15a3|4775665b47e94476|d3542d8dfa2c1faf|1818992126||t18996.6434885449s|27311217c8fe48e4|31354648|rds|vector|||2.982||
-epidemia_fit_delta|stem|03a62fbbc2f3f352|2625b02041a94047|cd6c49395c087fa4|-1246893380||t18996.656660152s|f0bf98ae7c4bdcba|10434367|rds|vector|||1712.518|Bulk Effective Samples Size ESS is too low, indicating posterior means and medians may be unreliable.Running the chains for more iterations may help. Seehttpmcstan.orgmiscwarnings.htmlbulkess|
-epidemia_projection_central|stem|4d6cf56a0e3bbfd5|f0a2dd0d1b7271c6|581788ef7d05ba78|-1580524482||t18996.6567905649s|312ec8578e4f4a47|1003402|rds|vector|||2.482||
-epidemia_projection_central_infections|stem|216f717a812688a9|4b665f0b1163c1b5|f7ee8a08aac4663f|59862551||t18996.6568200548s|c9ec665cc19cf3a1|9982086|rds|vector|||2.654||

@@ -7,6 +7,7 @@ author:
 date: 5th of January 2022
 output: 
   bookdown::pdf_document2:
+    keep_tex: true
     extra_dependencies: ["float"]
 header-includes:
   - \usepackage{float}
@@ -168,7 +169,8 @@ wild type with a mean of 5.22 days and a standard deviation of 2.54 days. [@zhan
 
 In analogy to the reduction of the generation time distribution for the central scenario 
 we assume a reduction in the incubation period to 3.56 days and a standard deviation of 2.10 days 
-for the Omicron variant.
+for the Omicron variant. This assumption would align with early observations of a reduced 
+mean incubation time. [@jansenInvestigationSARSCoV25292021]
 
 ### Infection to case observation time distribution
 
@@ -187,8 +189,7 @@ Estimates of the vaccine effectiveness against infection are based upon vaccine 
 symptomatic disease for the Omicron variant from results of the UKHSA test negative case control study. [@ukhealthsecurityagencyOmicronVOC21NOV015292021]
 A logistic regression is fitted to the vaccine effectiveness study estimates, as shown in figure \@ref(fig:assumed-ve).
 
-Based upon the assumptions outlined above and an assumed 19% protection from previous infection, without vaccination, 
-and 24% previous infections in the population we assume that on the 14th of November 2021 85% of the 
+Based upon the assumptions outlined above and an assumed 19% protection from previous infection [@fergusonReport49Growth2021], without vaccination, and 24% previous infections in the population we assume that on the 14th of November 2021 85% of the 
 population was susceptible, decreasing with the booster vaccination campaign to 68% by the 2nd of January 2022. 
 The daily number of vaccine doses administered in Austria [@bmsgpkCOVID19ZeitreiheVerabreichten] is shown in figure \@ref(fig:vaccine-doses-austria).
 
