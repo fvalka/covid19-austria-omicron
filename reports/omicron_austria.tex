@@ -86,6 +86,8 @@
 \usepackage[normalem]{ulem}
 \usepackage{makecell}
 \usepackage{xcolor}
+\usepackage[]{biblatex}
+\addbibresource{../bibliography/fabianvalka.bib}
 
 \title{Spread of the SARS-CoV-2 Omicron (B.1.1.529) Variant in Austria}
 \author{true}
@@ -106,10 +108,10 @@
 
 Austria performs both variant specific PCR testing on positive PCR samples, as well as sequencing.
 Sequencing is split up into two parts with sentinel surveillance for new variants and
-targeted sequencing of specific variants assigned in variant specific PCR sampling.\textsuperscript{1,2}
+targeted sequencing of specific variants assigned in variant specific PCR sampling. \autocite{SARSCov2VariantenOesterreich,holzerStrategieZurVirusvariantensurveillance}
 
 Combined results of the variant specific PCR testing are published as weekly
-whole-country aggregated case counts by variant of concern (VOC) in an online report.\textsuperscript{1}
+whole-country aggregated case counts by variant of concern (VOC) in an online report. \autocite{SARSCov2VariantenOesterreich}
 
 It is not clearly specified whether the report includes cases by reporting or lab diagnosis date,
 but since later reports always include increases in VOC cases in previous weeks it is assumed that
@@ -119,10 +121,10 @@ published in Austria. The report is based upon the variant specified in the Aust
 \hypertarget{variants-tracked-in-austria}{%
 \subsection{Variants tracked in Austria}\label{variants-tracked-in-austria}}
 
-Austria currently tracks the variants shown in table \ref{tab:variantstracked}.\textsuperscript{1,2}
+Austria currently tracks the variants shown in table \ref{tab:variantstracked} \autocite{SARSCov2VariantenOesterreich,holzerStrategieZurVirusvariantensurveillance}.
 
 \begin{longtable}[]{@{}lllll@{}}
-\caption{\label{tab:variantstracked} Variants tracked in Austria. Data available refers to the number of variants detected being reported online in the AGES variant surveillance report. ``PCR Screening'' and ``Sequenced when found in PCR'' as defined by the guidelines of the Austrian health ministry (Bundesministerium Soziales, Gesundheit, Pflege und Konsumentenschutz) as of the 20th of December 2021, last updated on the 1st of December 2021.\textsuperscript{2}}\tabularnewline
+\caption{\label{tab:variantstracked} Variants tracked in Austria. Data available refers to the number of variants detected being reported online in the AGES variant surveillance report. ``PCR Screening'' and ``Sequenced when found in PCR'' as defined by the guidelines of the Austrian health ministry (Bundesministerium Soziales, Gesundheit, Pflege und Konsumentenschutz) as of the 20th of December 2021, last updated on the 1st of December 2021 \autocite{holzerStrategieZurVirusvariantensurveillance}.}\tabularnewline
 \toprule
 \begin{minipage}[b]{0.11\columnwidth}\raggedright
 WHO Label\strut
@@ -241,7 +243,7 @@ Date, week ending & B.1.1.7 (Alpha) & B.1.351 (Beta) & P.1 (Gamma) & B.1.617.2 (
 Currently according to the variant data cases have already been assigned to the Delta variant in January 2021, but this is likely a
 mistake in the data, since the definition of the Delta variant has been changed to also include
 N501 positive cases with no further specification. During the period of Alpha replacing
-wild type cases this would likely unintentionally include wild type cases as Delta cases.\textsuperscript{1}
+wild type cases this would likely unintentionally include wild type cases as Delta cases \autocite{SARSCov2VariantenOesterreich}.
 We therefore ignore any Delta cases until April 2021.
 
 \hypertarget{assumptions}{%
@@ -344,7 +346,7 @@ We therefore ignore any Delta cases until April 2021.
 \hypertarget{model-description}{%
 \subsubsection{Model description}\label{model-description}}
 
-We fit two Bayesian regression model\textsuperscript{3} one to reported cases of Delta in Austria and a second one to reported Omicron cases. A sampling factor is introduced which is used to link cases to infections using a different time delay distribution for each variant. The sampling factor is defined as the proportion of cases assigned to any VOC to all cases in each week. Additionally an infection ascertainment ratio (IAR) estimate is used as the prior for the sampling factor. Based upon previous modeling a fixed IAR of 0.6 is used. Currently no representative PCR sampling or
+We fit two Bayesian regression model \autocite{flaxmanEstimatingEffectsNonpharmaceutical2020} one to reported cases of Delta in Austria and a second one to reported Omicron cases. A sampling factor is introduced which is used to link cases to infections using a different time delay distribution for each variant. The sampling factor is defined as the proportion of cases assigned to any VOC to all cases in each week. Additionally an infection ascertainment ratio (IAR) estimate is used as the prior for the sampling factor. Based upon previous modeling a fixed IAR of 0.6 is used. Currently no representative PCR sampling or
 current and representative seroprevalence studies could be found for estimation of the IAR.
 
 The model is built using the epidemia R package (version 1.0.0).
@@ -354,13 +356,13 @@ Infections are seeded for 6 days starting two weeks before the first cases were 
 \hypertarget{generation-time-distribution}{%
 \subsubsection{Generation time distribution}\label{generation-time-distribution}}
 
-Based upon comparing the serial interval of 2.22 (± 1.62) days reported for Omicron in South Korea\textsuperscript{4}
+Based upon comparing the serial interval of 2.22 (± 1.62) days reported for Omicron in South Korea \autocite{SerialIntervalBasic}
 to the serial interval of 3.26 days (95\% credible interval, 2.92--3.60) recently reported
-for Delta in South Korea\textsuperscript{5} we assume a 32\% reduction
+for Delta in South Korea \autocite{hwangTransmissionDynamicsDelta2021} we assume a 32\% reduction
 in the mean and standard deviation of the generation time from Delta to Omicron.
 
-For the Delta variant we assume the shape of a discretized gamma distribution\textsuperscript{6}
-with a mean of 4.6 days and a standard deviation of 3.1 days.\textsuperscript{7}
+For the Delta variant we assume the shape of a discretized gamma distribution \autocite{coriNewFrameworkSoftware2013}
+with a mean of 4.6 days and a standard deviation of 3.1 days \autocite{hartGenerationTimeAlpha2021}.
 Based upon the assumption above for Omicron we use a generation time distribution with a mean of
 3.13 days and a standard deviation of 2.22 days.
 
@@ -368,12 +370,12 @@ Based upon the assumption above for Omicron we use a generation time distributio
 \subsubsection{Incubation period time distribution}\label{methods-incubation}}
 
 For Delta we assume a gamma distributed incubation time distribution as previously reported for
-wild type with a mean of 5.22 days and a standard deviation of 2.54 days.\textsuperscript{8}
+wild type with a mean of 5.22 days and a standard deviation of 2.54 days. \autocite{zhangEvolvingEpidemiologyTransmission2020}
 
 In analogy to the reduction of the generation time distribution for the central scenario
 we assume a reduction in the incubation period to 3.56 days and a standard deviation of 2.10 days
 for the Omicron variant. This assumption would align with early observations of a reduced
-mean incubation time.\textsuperscript{9}
+mean incubation time. \autocite{jansenInvestigationSARSCoV25292021}
 
 \hypertarget{infection-to-case-observation-time-distribution}{%
 \subsubsection{Infection to case observation time distribution}\label{infection-to-case-observation-time-distribution}}
@@ -391,12 +393,12 @@ The resulting combined distribution is shown in figure \ref{fig:i2o-delta-omicro
 \subsubsection{Immunity assumption}\label{immunity-assumption}}
 
 Estimates of the vaccine effectiveness against infection are based upon vaccine effectiveness against
-symptomatic disease for the Omicron variant from results of the UKHSA test negative case control study.\textsuperscript{10}
+symptomatic disease for the Omicron variant from results of the UKHSA test negative case control study. \autocite{ukhealthsecurityagencyOmicronVOC21NOV015292021}
 A logistic regression is fitted to the vaccine effectiveness study estimates, as shown in figure \ref{fig:assumed-ve}.
 
-Based upon the assumptions outlined above and an assumed 19\% protection from previous infection,\textsuperscript{11} without vaccination, and 24\% previous infections in the population we assume that on the 14th of November 2021 85\% of the
+Based upon the assumptions outlined above and an assumed 19\% protection from previous infection \autocite{fergusonReport49Growth2021}, without vaccination, and 24\% previous infections in the population we assume that on the 14th of November 2021 85\% of the
 population was susceptible, decreasing with the booster vaccination campaign to 68\% by the 2nd of January 2022.
-The daily number of vaccine doses administered in Austria\textsuperscript{12} is shown in figure \ref{fig:vaccine-doses-austria}.
+The daily number of vaccine doses administered in Austria \autocite{bmsgpkCOVID19ZeitreiheVerabreichten} is shown in figure \ref{fig:vaccine-doses-austria}.
 
 To account for the uncertainty around those estimates samples for the proportion of the susceptibility
 of the population are drawn from a normal distribution with a mean of 64\% and a standard
@@ -427,7 +429,7 @@ infections are shown in figure \ref{fig:central-projection-rt-infections}.
 \hypertarget{generation-time-scenarios}{%
 \subsection{Generation time scenarios}\label{generation-time-scenarios}}
 
-Since the generation time distribution is unclear, with some early evidence of a shorter serial interval.\textsuperscript{4}
+Since the generation time distribution is unclear, with some early evidence of a shorter serial interval. \autocite{SerialIntervalBasic}
 
 The generation time distribution has been varied by assuming different mean, \(\mu\),
 and standard deviation, \(\sigma\), variants for the discretized gamma distribution.
@@ -450,7 +452,7 @@ central scenario assumptions.
 
 A Bayesian multinomial GLMM was specified using brms (version 2.16.3). Variant of concern data starting from the 1st of September 2021 for the following variants were included: Alpha (B.1.1.7), Delta (B.1.617.2) and Omicron (B.1.1.529) At the beginning of September 3 samples of Gamma (P.1) were also reported and 1 sample of Beta (B.1.351). Detection of other variants of concern has not been reported in Austria in the time period from 2021-09-01 to 2022-01-02. Estimates of CIs are Bayesian credible intervals estimated using highest density intervals.
 
-A simple model structure with one growth rate and intercept per variant was used. An observation-level random effect was added to account for overdispersion\textsuperscript{13} in the VOC case data. Delta (B.1.617.2) was used as the reference variant for the model since it was detected over the whole time period.
+A simple model structure with one growth rate and intercept per variant was used. An observation-level random effect was added to account for overdispersion\autocite{harrisonUsingObservationlevelRandom2014} in the VOC case data. Delta (B.1.617.2) was used as the reference variant for the model since it was detected over the whole time period.
 
 \hypertarget{results-1}{%
 \subsection{Results}\label{results-1}}
@@ -520,7 +522,7 @@ fit for each variant.
 \subsection{Timeline of vaccinations in Austria}\label{timeline-of-vaccinations-in-austria}}
 
 Figure \ref{fig:vaccine-doses-austria} shows the 7-day moving average of
-daily doses of vaccines administered in Austria by manufacturer.\textsuperscript{12}
+daily doses of vaccines administered in Austria by manufacturer. \autocite{bmsgpkCOVID19ZeitreiheVerabreichten}
 
 This data is used in the estimation of the immunity against infection
 with the omicron variant.
@@ -593,48 +595,6 @@ as described in section \ref{methods-incubation}.
 \caption{Assumed infection to observation time distributions for Delta and Omicron}\label{fig:i2o-delta-omicron}
 \end{figure}
 
-\hypertarget{references}{%
-\section*{References}\label{references}}
-\addcontentsline{toc}{section}{References}
-
-\hypertarget{refs}{}
-\leavevmode\hypertarget{ref-SARSCov2VariantenOesterreich}{}%
-1. SARS-Cov-2-Varianten in Österreich. \emph{AGES - Österreichische Agentur für Gesundheit und Ernährungssicherheit}.
-
-\leavevmode\hypertarget{ref-holzerStrategieZurVirusvariantensurveillance}{}%
-2. Holzer, M. Strategie zur Virusvariantensurveillance. 8.
-
-\leavevmode\hypertarget{ref-flaxmanEstimatingEffectsNonpharmaceutical2020}{}%
-3. Flaxman, S. \emph{et al.} Estimating the effects of non-pharmaceutical interventions on COVID-19 in Europe. \emph{Nature} 1--8 (2020) doi:\href{https://doi.org/10.1038/s41586-020-2405-7}{10.1038/s41586-020-2405-7}.
-
-\leavevmode\hypertarget{ref-SerialIntervalBasic}{}%
-4. Serial interval and basic reproduction number of SARS-CoV-2 Omicron variant in South Korea \textbar{} medRxiv.
-
-\leavevmode\hypertarget{ref-hwangTransmissionDynamicsDelta2021}{}%
-5. Hwang, H. \emph{et al.} Transmission dynamics of the Delta variant of SARS-CoV-2 infections in South Korea. \emph{The Journal of Infectious Diseases} jiab586 (2021) doi:\href{https://doi.org/10.1093/infdis/jiab586}{10.1093/infdis/jiab586}.
-
-\leavevmode\hypertarget{ref-coriNewFrameworkSoftware2013}{}%
-6. Cori, A., Ferguson, N. M., Fraser, C. \& Cauchemez, S. A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics. \emph{American Journal of Epidemiology} \textbf{178}, 1505--1512 (2013).
-
-\leavevmode\hypertarget{ref-hartGenerationTimeAlpha2021}{}%
-7. Hart, W. S. \emph{et al.} Generation time of the Alpha and Delta SARS-CoV-2 variants. 2021.10.21.21265216 (2021) doi:\href{https://doi.org/10.1101/2021.10.21.21265216}{10.1101/2021.10.21.21265216}.
-
-\leavevmode\hypertarget{ref-zhangEvolvingEpidemiologyTransmission2020}{}%
-8. Zhang, J. \emph{et al.} Evolving epidemiology and transmission dynamics of coronavirus disease 2019 outside Hubei province, China: A descriptive and modelling study. \emph{The Lancet Infectious Diseases} S1473309920302309 (2020) doi:\href{https://doi.org/10.1016/S1473-3099(20)30230-9}{10.1016/S1473-3099(20)30230-9}.
-
-\leavevmode\hypertarget{ref-jansenInvestigationSARSCoV25292021}{}%
-9. Jansen, L. Investigation of a SARS-CoV-2 B.1.1.529 (Omicron) Variant Cluster Nebraska, NovemberDecember 2021. \emph{MMWR. Morbidity and Mortality Weekly Report} \textbf{70}, (2021).
-
-\leavevmode\hypertarget{ref-ukhealthsecurityagencyOmicronVOC21NOV015292021}{}%
-10. UK Health Security Agency. Omicron VOC-21NOV-01 (B.1.1.529) technical briefing: Hospitalisation and vaccine effectiveness. 17 (2021).
-
-\leavevmode\hypertarget{ref-fergusonReport49Growth2021}{}%
-11. Ferguson, N. \emph{Report 49: Growth and immune escape of the Omicron SARS-CoV-2 variant of concern in England}. (2021) doi:\href{https://doi.org/10.25561/93038}{10.25561/93038}.
-
-\leavevmode\hypertarget{ref-bmsgpkCOVID19ZeitreiheVerabreichten}{}%
-12. BMSGPK. COVID-19: Zeitreihe der verabreichten Impfdosen der Corona-Schutzimpfung - data.gv.at.
-
-\leavevmode\hypertarget{ref-harrisonUsingObservationlevelRandom2014}{}%
-13. Harrison, X. A. Using observation-level random effects to model overdispersion in count data in ecology and evolution. \emph{PeerJ} \textbf{2}, e616 (2014).
+\printbibliography[title=References]
 
 \end{document}

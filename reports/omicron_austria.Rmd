@@ -8,6 +8,7 @@ date: 5th of January 2022
 output: 
   bookdown::pdf_document2:
     keep_tex: true
+    citation_package: biblatex
     extra_dependencies: ["float"]
 header-includes:
   - \usepackage{float}
@@ -18,7 +19,7 @@ header-includes:
     \author{Fabian Valka \\ fvalka@vektorraum.com}
     \affil{vektorraum}
     ```
-bibliography: ["../bibliography/fabian_valka.bib"]
+bibliography: ["../bibliography/fabianvalka.bib"]
 csl: "../bibliography/nature.csl"
 ---
 
