@@ -19,13 +19,11 @@ vaccination_data|stem|d9044cb9c6f15e64|c1b149d958644716|7db5cf779e789000|1512963
 bnt_bnt_bnt_ve|stem|65a6bcabcd80575b|2f1e6d7411e00839|0552ca43aedbc887|1356047989||t18995.7466831684s|75277441a8a8bf62|163460|rds|vector|||3.128||
 bnt_bnt_ve|stem|45362a7eefa2c9d8|ba8c62b3317fa7ce|0552ca43aedbc887|1088037109||t18995.7467992298s|b742d00aafdb28e6|157331|rds|vector|||13.017||
 pop_immunity_estimate|stem|75928907584ededf|0b0c465c97d15c62|d173279340e9248a|408265098||t18995.7475527728s|410787eedf220285|814|rds|vector|||63.451||
-raw_ems_case_file|stem|af3f6239073a12b7|d617eff074165848|ef46db3751d8e999|-415127701|data/CovidFaelle_Timeline.csv|t18996.5662268519s|28686295e714995e|526577|file|vector|||2.747||
 raw_data_file|stem|b02843560ef3bde3|94b9e2077b32a4a6|ef46db3751d8e999|2110307107|https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2022-01-04.csv|t18997.0012298622s||0|url|vector|||2.784||
 raw_data|stem|5d731fc75fd6eb11|67dc4edba086ba1a|a6e0ed508de60b8b|-979620141||t18997.0012813708s|4942d91646dd93bc|978|rds|vector|||3.256||
 file_raw_data_export|stem|1903876b1533ec27|db6ebd2cdad83e63|d28277ed15ffef97|-506327921|data/ages_varianten/Varianten_nach_KWs_2022-01-04.csv|t18997.0013280824s|4bd2df2f3e23065a|1079|file|vector|||2.866||
 data|stem|b96e58a11ef2a426|b4f6e1ed87270214|3277ec9d72b41220|1588979285||t18997.0013298416s|8df74cbd10416ac5|3739|rds|vector|||2.96||
 plot_assigned|stem|9f60265c89def9fb|8bbce6ebda797e42|e46d1a923cf5cda0|-1481610266||t18997.0013794235s|bab11966939955a2|91367|rds|vector|||2.874||
-cases_ems_austria|stem|579f1cdb9aacf239|902e1d5c1433e153|a5255b1b237abe30|1194357580||t18997.0013986359s|08f206040ec40128|19972|rds|vector|||13.334||
 plot_omicron_proportion_assigned|stem|8b4d48299e4b48c6|8cba6e61469bed3f|608ba2326e0907ca|-1532890737||t18997.0014645136s|31e896b399a7a932|136677|rds|vector|||5.266||
 epidemia_fit_generation_time_scenarios_4f8b08cc|branch|71509860aabbab59|be1f628c1723de1c|a638e6733376d737|1014845796||t18997.0029045647s|9a13f0beedc9b81c|4945749|rds|list|epidemia_fit_generation_time_scenarios||114.64|i2o does not sum to one. Please ensure this is intentional.|
 epidemia_fit_generation_time_scenarios_a20fc85d|branch|a8867447b3ca1f7a|be1f628c1723de1c|c94f124b5901f589|881064635||t18997.0029878493s|02b4ecb5adacd17a|4946886|rds|list|epidemia_fit_generation_time_scenarios||132.833|Examine the pairs plot to diagnose sampling problems|
@@ -98,3 +96,5 @@ plot_multinomial_fit|function|d5a0a6ebe15ad876||||||||||||||
 geom_stepribbon|function|d1cd3b087f3b7f80||||||||||||||
 epidemia_generation_time_scenario|function|18bb441146c75f43||||||||||||||
 plot_epidemia_rt_projection|function|36407e26823efc49||||||||||||||
+raw_ems_case_file|stem|fbe3563d9e7f953d|d617eff074165848|ef46db3751d8e999|-415127701|data/CovidFaelle_Timeline.csv|t18997.5662268519s|c46f03fb39986b7a|527416|file|vector|||2.557||
+cases_ems_austria|stem|2c500067eda4dfb4|902e1d5c1433e153|c207fb9f8324b6e1|1194357580||t18997.5745967119s|c9bc74dc9885b820|20059|rds|vector|||0.177||
