@@ -140,6 +140,13 @@
       "Repository": "CRAN",
       "Hash": "0325b5be38a02d192828027983c7b470"
     },
+    "RcppRoll": {
+      "Package": "RcppRoll",
+      "Version": "0.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "84a03997fbb5acfb3c9b43bad88fea1f"
+    },
     "Rdpack": {
       "Package": "Rdpack",
       "Version": "2.1.3",
@@ -1404,6 +1411,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "30f0ebc41feba25691073626ff5e2cf4"
+    },
+    "sitools": {
+      "Package": "sitools",
+      "Version": "1.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "099187c18cebefe2d0821d91b7445d6b"
     },
     "sourcetools": {
       "Package": "sourcetools",
