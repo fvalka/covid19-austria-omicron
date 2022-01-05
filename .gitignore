@@ -2,7 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-bibliography/
 README.html
 R/prototypes/
 output/tmp/
