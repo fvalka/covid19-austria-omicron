@@ -32,7 +32,7 @@ tar_option_set(packages = c("readr", "brms", "dplyr", "ggplot2", "epidemia", "he
 list(
   tar_target(
     raw_data_file,
-    "https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2022-01-04.csv",
+    "https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2022-01-05.csv",
     format = "url"
   ),
   tar_target(
