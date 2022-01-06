@@ -63,17 +63,30 @@ list(
     read_csv2(raw_vaccination_data_file)
   ),
   tar_target(
+    bnt_bnt_ve_file,
+    "data/ve_data/omicron/bnt162b2/dose_2.csv",
+    format = "file"
+  ),
+  tar_target(
+    bnt_bnt_bnt_ve_file,
+    "data/ve_data/omicron/bnt162b2/dose_3.csv",
+    format = "file"
+  ),
+  tar_target(
     bnt_bnt_ve,
-    estimate_ve_from_study(here("data/ve_data/bnt_dose_2.csv"), length(vaccination_data$date), start_day = 14)
+    estimate_ve_from_study(bnt_bnt_ve_file, length(vaccination_data$date), start_day = 14)
     
   ),
   tar_target(
     bnt_bnt_bnt_ve,
-    estimate_ve_from_study(here("data/ve_data/bnt_bnt_boost.csv"), length(vaccination_data$date))
+    estimate_ve_from_study(bnt_bnt_bnt_ve_file, length(vaccination_data$date))
   ),
   tar_target(
     pop_immunity_estimate,
-    estimate_population_immunity(vaccination_data, bnt_bnt_ve = bnt_bnt_ve, bnt_bnt_bnt_ve = bnt_bnt_bnt_ve)
+    estimate_population_immunity(vaccination_data, 
+                                 dose_1_ve = estimate_population_immunity_assumptions$zero_ve,
+                                 dose_2_ve = bnt_bnt_ve, 
+                                 dose_3_ve = bnt_bnt_bnt_ve)
   ),
   tar_target(
     epidemia_fit_omicron, 

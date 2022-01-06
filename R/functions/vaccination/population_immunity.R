@@ -21,12 +21,21 @@ estimate_ve_from_study <- function(ve_file, days, start_day = 7) {
                 rename(ve_original_data=ve))
 }
 
+estimate_population_immunity_assumptions <- list(
+  zero_ve <- data.frame(
+    t=0:999,
+    ve=rep(0, 1000),
+    ve_original_data=NA
+  )
+)
+
 #' Estimate the time evolution of population immunity levels
 #' for Omicron
 estimate_population_immunity <- function(vaccination_data,
                                          infection_estimate = 0.24,
-                                         bnt_bnt_ve,
-                                         bnt_bnt_bnt_ve) {
+                                         ve_dose_1,
+                                         ve_dose_2,
+                                         ve_dose_3) {
   pop_austria <- 8932664
   
   unvaccinated_data <- vaccination_data %>% 
@@ -86,10 +95,11 @@ estimate_population_immunity <- function(vaccination_data,
     
     infection_protection <- 0.19
     
-    immunity_dose_3 <- sum(dose_status$dose_3 * rev(bnt_bnt_bnt_ve$ve[1:length(dose_status$date)])) # No increase for prior infection
-    immunity_dose_2_uninfected <- sum((1-infection_estimate) * dose_status$dose_2 * rev(bnt_bnt_ve$ve[1:length(dose_status$date)]))
-    immunity_dose_2_infected <- sum(infection_estimate * dose_status$dose_2 * rev(bnt_bnt_bnt_ve$ve[1:length(dose_status$date)])) # Assume booster VE
-    immunity_dose_1_infected <- sum(infection_estimate * dose_status$dose_1 * rev(bnt_bnt_ve$ve[1:length(dose_status$date)])) # Assume two dose VE
+    immunity_dose_3 <- sum(dose_status$dose_3 * rev(ve_dose_3$ve[1:length(dose_status$date)])) # No increase for prior infection
+    immunity_dose_2_uninfected <- sum((1-infection_estimate) * dose_status$dose_2 * rev(ve_dose_2$ve[1:length(dose_status$date)]))
+    immunity_dose_2_infected <- sum(infection_estimate * dose_status$dose_2 * rev(ve_dose_3$ve[1:length(dose_status$date)])) # Assume booster VE
+    immunity_dose_1_uninfected <- sum((1-infection_estimate) * dose_status$dose_1 * rev(ve_dose_1$ve[1:length(dose_status$date)])) 
+    immunity_dose_1_infected <- sum(infection_estimate * dose_status$dose_1 * rev(ve_dose_2$ve[1:length(dose_status$date)])) # Assume two dose VE
     immunity_infection <- tail(unvaccinated_data$unvaccinated, 1) * infection_estimate * infection_protection
     
     data.frame(
