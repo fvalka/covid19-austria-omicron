@@ -32,7 +32,7 @@ tar_option_set(packages = c("readr", "brms", "dplyr", "ggplot2", "epidemia", "he
 list(
   tar_target(
     raw_data_file,
-    "https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2022-01-05.csv",
+    "https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2022-01-07.csv",
     format = "url"
   ),
   tar_target(
@@ -79,7 +79,6 @@ list(
     epidemia_fit_omicron, 
     epidemia_generation_time_scenario(data = data,
                                       variants_investigated = "B.1.1.529 (Omikron)",
-                                      min_cases = 1,
                                       gen_time_mean = 3.13,
                                       gen_time_sd = 2.22,
                                       i2o_cases = epidemia_param_data$i2o_omicron_si_shortened,
@@ -118,7 +117,6 @@ list(
     epidemia_generation_time_scenario(data=data,
       gen_time_mean = scenarios_generation_times_mean_omicron, 
       gen_time_sd = scenarios_generation_times_sd_omicron,
-      min_cases = 1,
       i2o_cases = epidemia_param_data$i2o_omicron_si_shortened,
       pop_immunity = pop_immunity_estimate),
     pattern = map(scenarios_generation_times_mean_omicron, scenarios_generation_times_sd_omicron),
