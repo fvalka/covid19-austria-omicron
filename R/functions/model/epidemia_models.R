@@ -53,15 +53,17 @@ epidemia_fit_variant <- function(variants_investigated = "B.1.1.529 (Omikron)",
     mutate(sampled=cases_assigned/cases_all) %>%
     mutate(cases_extrapolated = replace(cases_extrapolated, which(date < ostart), NA))  %>%
     mutate(cases = replace(cases, which(date < ostart), NA)) %>%
-    mutate(pop = pop)
+    mutate(pop = pop) %>%
+    mutate(rt_adj = 1)
   
   rt <- epirt(
-    formula = R(variant, date) ~ 1 + rw(time = week, prior_scale = 0.3) +
+    formula = R(variant, date) ~ 1 + rt_adj + rw(time = week, prior_scale = 0.3) +
       I(date>="2021-04-01") +
       I(date>="2021-11-08") +
       I(date>="2021-11-15") +
       I(date>="2021-11-22"),
-    prior_intercept = rstanarm::normal(log(1), log(3)),
+    prior_intercept = rstanarm::normal(-1, log(3)),
+    prior = rstanarm::normal(c(1, 0, 0, 0, 0), scale = 0.5),
     link = 'log' # scaled_logit(7)
   )
   

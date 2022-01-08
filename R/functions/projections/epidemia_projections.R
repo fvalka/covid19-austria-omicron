@@ -26,7 +26,8 @@ epidemia_extend_cases <-
       proportion_high = NA,
       cases_extrapolated = -1,
       sampled = sampled_cases,
-      pop = pop_modeled
+      pop = pop_modeled,
+      rt_adj = 1
     ) 
     
     if("rm_col" %in% colnames(data)) {

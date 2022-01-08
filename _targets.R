@@ -84,9 +84,9 @@ list(
   tar_target(
     pop_immunity_estimate,
     estimate_population_immunity(vaccination_data, 
-                                 dose_1_ve = estimate_population_immunity_assumptions$zero_ve,
-                                 dose_2_ve = bnt_bnt_ve, 
-                                 dose_3_ve = bnt_bnt_bnt_ve)
+                                 ve_dose_1 = estimate_population_immunity_assumptions$zero_ve,
+                                 ve_dose_2 = bnt_bnt_ve, 
+                                 ve_dose_3 = bnt_bnt_bnt_ve)
   ),
   tar_target(
     epidemia_fit_omicron, 
