@@ -1,4 +1,12 @@
-epidemia_fit_omicron <- tar_read("epidemia_fit_omicron")
+library(targets)
+library(dplyr)
+library(ggplot2)
+library(epidemia)
+library(patchwork)
+
+source("R/functions/projections/epidemia_projections.R")
+
+epidemia_fit_omicron <- tar_read("epidemia_fit_omicron_extrapolated")
 extended_data <- epidemia_extend_cases(epidemia_fit_omicron)
 
 data_for_scenario <- function(t_switch=as.Date("2022-01-08") , rt_adj_new = 0.33) {
@@ -74,7 +82,7 @@ plot_single_date <- function(plot_date) {
                     caption = "Black line: Median. Colored shaded areas: Credible intervals: 30%, 60% and 90%
   Grey shaded area: Actual case numbers likely to be limited by testing capacity, higher estimates likely never to be ascertainable") 
   
-  ggsave(glue::glue("output/reduction_anim/{plot_date}.png"), width = 10, height = 5)
+  ggsave(glue::glue("output/reduction_anim_extrapolated/{plot_date}.png"), width = 10, height = 5)
 }
 
 seq(as.Date("2022-01-03"), as.Date("2022-02-15"), by=1) %>%

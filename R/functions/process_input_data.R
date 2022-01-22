@@ -5,8 +5,7 @@ library(readr)
 process_variant_data <- function(raw_input_data) {
   variant_cases <- raw_input_data %>% 
     select(-filename) %>%
-    mutate(Kalenderwoche = stringr::str_replace(Kalenderwoche, "2021-W", "")) %>%
-    filter(!is.na(as.numeric(Kalenderwoche))) %>%
+    filter(stringr::str_detect(Kalenderwoche, "\\d{4}-W\\d{1,2}")) %>%
     reshape2::melt(id.vars=c("Kalenderwoche", "Fälle gesamt"),
                    variable.name="variant",
                    value.name="cases") 
@@ -19,8 +18,10 @@ process_variant_data <- function(raw_input_data) {
     left_join(variant_cases_assigned) %>%
     mutate(proportion=cases/cases_assigned) %>%
     mutate(cases_extrapolated = proportion * `Fälle gesamt`) %>%
-    mutate(Kalenderwoche = as.numeric(Kalenderwoche)) %>%
-    mutate(Kalenderwoche = ISOweek::ISOweek2date(sprintf("2021-W%02d-7", Kalenderwoche))) %>% 
+    mutate(Kalenderwoche = ISOweek::ISOweek2date(
+      sprintf("%s-W%02d-7", 
+              stringr::str_match(Kalenderwoche, "(\\d{4})-W(\\d{1,2})")[,2], 
+              as.numeric(stringr::str_match(Kalenderwoche, "(\\d{4})-W(\\d{1,2})")[,3])))) %>% 
     purrr::pmap_dfr(~ estimate_proportion(..1, ..2, ..3, ..4, ..5))
 }
 

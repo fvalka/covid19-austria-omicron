@@ -54,7 +54,7 @@ epidemia_fit_variant <- function(variants_investigated = "B.1.1.529 (Omikron)",
     mutate(cases_extrapolated = replace(cases_extrapolated, which(date < ostart), NA))  %>%
     mutate(cases = replace(cases, which(date < ostart), NA)) %>%
     mutate(pop = pop) %>%
-    mutate(rt_adj = 1)
+    mutate(rt_adj = 1) 
   
   rt <- epirt(
     formula = R(variant, date) ~ 1 + rt_adj + rw(time = week, prior_scale = 0.3) +
@@ -70,7 +70,7 @@ epidemia_fit_variant <- function(variants_investigated = "B.1.1.529 (Omikron)",
   # Observations model input
   obs <-  epiobs(
     formula = cases ~ 0 + sampled,
-    prior = rstanarm::normal(location=0.6, scale=0.2), # IAR
+    prior = rstanarm::normal(location=0.6, scale=0.1), # IAR
     prior_intercept = rstanarm::normal(location=0.6, scale=0.01),
     link = "identity",
     i2o = i2o2week(i2o_cases)
@@ -108,8 +108,9 @@ epidemia_fit_variant <- function(variants_investigated = "B.1.1.529 (Omikron)",
   options(mc.cores = parallel::detectCores())
   
   args$algorithm <- "sampling"
-  args$iter <- 3000
+  args$iter <- 5000
   args$control = list(max_treedepth = 12)
+  args$init = 0
   
   fm <- do.call(epim, args)
   
@@ -129,5 +130,6 @@ epidemia_param_data <- list(
   i2o_cases_original = read_csv(here("data/i2o/i2o_cases.csv"))$i2o,
   # Fit to original and recuded incubation time distr. mean and sd by factor 
   # from South Korea serial interval factor between Omicron and Delta
-  i2o_omicron_si_shortened = read_csv(here("data/i2o/i2o_cases_omicron.csv"))$i2o 
+  i2o_omicron_si_shortened = read_csv(here("data/i2o/i2o_cases_omicron.csv"))$i2o,
+  gen_time_delta = EpiEstim::discr_si(0:99, mu = 4.6, sigma = 3.1)/sum(EpiEstim::discr_si(0:99, mu = 4.6, sigma = 3.1))
 )

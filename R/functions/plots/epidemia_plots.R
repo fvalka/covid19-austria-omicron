@@ -135,7 +135,7 @@ plot_epidemia_generation_time_scenarios <- function(data, fits,
     labs(x="Date", y="Daily infections per 100k", fill="Variant", alpha="CrI") 
 }
 
-plot_epidemia_rt_projection <- function(fit, extend_days = 30, ci_levels=c(30, 60, 90)) {
+plot_epidemia_rt_projection <- function(data, fit, extend_days = 30, ci_levels=c(30, 60, 90)) {
   newdata <-  epidemia_extend_cases(fit = fit, extend_days = extend_days)
   
   rt_projections <- epidemia::posterior_rt(fit$fit, newdata=newdata)
@@ -152,6 +152,32 @@ plot_epidemia_rt_projection <- function(fit, extend_days = 30, ci_levels=c(30, 6
     ggpubr::theme_pubr() +
     labs(x="Date", y="Reproduction number", fill="Variant", alpha="CrI") 
   
+}
+
+plot_epidemia_rt_infections_projection <- function(data,
+                                                   fit_reference, 
+                                                   fit_new_variant, 
+                                                   epidemia_projection) {
+  
+  p_rt_omicron <- plot_epidemia_rt_projection(data, fit_new_variant) + 
+    ggtitle("Reproduction number, Omicron (B.1.1.529)")+
+    coord_cartesian(ylim=c(0, 4))
+  
+  
+  p_rt_delta <-plot_epidemia_rt_projection(data, fit_reference) + 
+    ggtitle("Reproduction number, Delta (B.1.617.2)") +
+    coord_cartesian(ylim=c(0, 4))
+  
+  p_infections <- plot_epidemia_projection(data, fit_reference, fit_new_variant, 
+                                           epidemia_projection, 
+                                           ylim = c(0, 1e4)) +
+    ggtitle("Daily infections") +
+    labs(y="Daily infections per 100k") +
+    coord_cartesian(xlim = c(as.Date("2021-12-15"), NA))
+  
+  guide_area() / ((p_rt_omicron / p_rt_delta) | p_infections) + 
+    plot_layout(guides = "collect", heights = c(2, 10)) + 
+    plot_annotation(tag_levels = 'A')
 }
 
 plot_epidemia_scenarios <- function() {

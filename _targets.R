@@ -16,6 +16,7 @@ source("R/functions/vaccination/population_immunity.R")
 
 # Projections
 source("R/functions/projections/epidemia_projections.R")
+source("R/functions/projections/multinomial_extrapolated_cases.R")
 
 # Scenarios
 source("R/functions/scenarios/epidemia_scenarios.R")
@@ -28,11 +29,11 @@ source("R/functions/plots/multinomial_model_plots.R")
 source("R/functions/plots/epidemia_plots.R")
 
 options(tidyverse.quiet = TRUE)
-tar_option_set(packages = c("readr", "brms", "dplyr", "ggplot2", "epidemia", "here", "emmeans"))
+tar_option_set(packages = c("readr", "brms", "dplyr", "ggplot2", "epidemia", "here", "emmeans", "patchwork"))
 list(
   tar_target(
     raw_data_file,
-    "https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2022-01-07.csv",
+    "https://www.ages.at/fileadmin/AGES2015/Themen/Krankheitserreger_Dateien/Coronavirus/Varianten_ab_Mai/Varianten_nach_KWs_2022-01-21.csv",
     format = "url"
   ),
   tar_target(
@@ -102,7 +103,7 @@ list(
     epidemia_fit_variant(variants_investigated = "B.1.617.2 (Delta)",
                          variants_all = data,
                          ostart = as.Date("2021-05-01"),
-                         generation_time = EpiEstim::discr_si(0:99, mu = 4.6, sigma = 3.1)/sum(EpiEstim::discr_si(0:99, mu = 4.6, sigma = 3.1)))
+                         generation_time = epidemia_param_data$gen_time_delta)
   ),
   tar_target(
     epidemia_projection_central, 
@@ -118,12 +119,16 @@ list(
                      predictor = epidemia_projection_infections_generator)
   ),
   tar_target(
+    data_multinomial_extrapolated,
+    multinomial_extrapolated_cases(data, multinomial_fit, cases_ems_austria)  
+  ),
+  tar_target(
     scenarios_generation_times_mean_omicron,
-    c(3.13, 4.6, 3.13, 2.84, 2.84, 2.22)
+    c(3.13, 4.6, 3.13, 2.84, 2.84, 2.22, 3.3)
   ),
   tar_target(
     scenarios_generation_times_sd_omicron,
-    c(2.22, 3.1, 1.6, 1.6, 2.2, 1.57)
+    c(2.22, 3.1, 1.6, 1.6, 2.2, 1.57, 3.5)
   ),
   tar_target(
     epidemia_fit_generation_time_scenarios,
@@ -134,6 +139,43 @@ list(
       pop_immunity = pop_immunity_estimate),
     pattern = map(scenarios_generation_times_mean_omicron, scenarios_generation_times_sd_omicron),
     iteration = "list"
+  ),
+  tar_target(
+    epidemia_fit_generation_time_lnorm,
+    epidemia_fit_variant(variants_investigated = "B.1.1.529 (Omikron)",
+                         variants_all = data,
+                         generation_time = dlnorm(0:99, meanlog = 0.817, sdlog = 0.868)/sum(dlnorm(0:99, meanlog = 0.817, sdlog = 0.868)),
+                         i2o_cases = epidemia_param_data$i2o_omicron_si_shortened,
+                         pop_immunity = pop_immunity_estimate)
+  ),
+  tar_target(
+    epidemia_fit_delta_extrapolated, 
+    epidemia_fit_variant(variants_investigated = "B.1.617.2 (Delta)",
+                         variants_all = data_multinomial_extrapolated,
+                         ostart = as.Date("2021-05-01"),
+                         generation_time = epidemia_param_data$gen_time_delta)
+  ),
+  tar_target(
+    epidemia_fit_omicron_extrapolated, 
+    epidemia_generation_time_scenario(data = data_multinomial_extrapolated %>% as.data.frame(),
+                                      variants_investigated = "B.1.1.529 (Omikron)",
+                                      gen_time_mean = 3.13,
+                                      gen_time_sd = 2.22,
+                                      i2o_cases = epidemia_param_data$i2o_omicron_si_shortened,
+                                      pop_immunity = pop_immunity_estimate)
+  ),
+  tar_target(
+    epidemia_projection_extrapolated, 
+    epidemia_project(epidemia_fit_delta_extrapolated,
+                     epidemia_fit_omicron_extrapolated,
+                     extend_days = 30)
+  ),
+  tar_target(
+    epidemia_projection_extrapolated_infections, 
+    epidemia_project(epidemia_fit_delta_extrapolated,
+                     epidemia_fit_omicron_extrapolated,
+                     extend_days = 30,
+                     predictor = epidemia_projection_infections_generator)
   ),
   tar_target(
     binomial_fit,
@@ -225,11 +267,71 @@ list(
   tar_target(
     file_plot_quasibinomial_fit_ci_zoom,
     export_plot_with_title(data, plot_quasibinomial_fit_ci_zoom, "austria-variants-binomial-glm.png",
-                           subtitle = "Overdispersed binomial GLM fit\nShaded area showing 95% CI of quasibinomial model")
+                           subtitle = "Overdispersed binomial GLM fit\nShaded area showing 95% CI of quasibinomial model"),
+    format = "file"
   ),
   tar_target(
     file_plot_quasibinomial_fit_log_odds,
     export_plot_with_title(data, plot_quasibinomial_log_odds, "austria-variants-binomial-glm-log-odds.png",
-                           subtitle = "Overdispersed binomial GLM fit\nShaded area showing 95% CI of quasibinomial model")
+                           subtitle = "Overdispersed binomial GLM fit\nShaded area showing 95% CI of quasibinomial model"),
+    format = "file"
+  ),
+  tar_target(
+    file_plot_epidemia_case_projections,
+    export_plot_with_title(data, 
+                           plot_epidemia_projection(data, epidemia_fit_delta, epidemia_fit_omicron, 
+                                                          epidemia_projection_central, cases_ems_austria, 
+                                                          ylim = c(0, 1.6e4)),
+                           "austria-epidemia-cases-projections.png",
+                           subtitle="Projection of weekly cases per 100k, assuming current dynamics continue",
+                           width=13,
+                           height=6.5),
+    format = "file"
+  ),
+  tar_target(
+    file_plot_epidemia_rt_infections_projections,
+    export_plot_with_title(data, 
+                           plot_epidemia_rt_infections_projection(data = data, 
+                                                                  epidemia_fit_delta, 
+                                                                  epidemia_fit_omicron, 
+                                                                  epidemia_projection_central_infections),
+                           "austria-epidemia-rt-infections-projections.png",
+                           subtitle="NULL",
+                           width=13,
+                           height=6.5),
+    format = "file"
+  ),
+  tar_target(
+    file_plot_epidemia_case_projections_extrapolated,
+    export_plot_with_title(data, 
+                           plot_epidemia_projection(data_multinomial_extrapolated, 
+                                                    epidemia_fit_delta_extrapolated, 
+                                                    epidemia_fit_omicron_extrapolated, 
+                                                    epidemia_projection_extrapolated, 
+                                                    cases_ems_austria, 
+                                                    ylim = c(0, 1.6e4)),
+                           "austria-epidemia-extrapolated-cases-projections.png",
+                           subtitle="Projection of weekly cases per 100k, assuming current dynamics continue",
+                           width=13,
+                           height=6.5),
+    format = "file"
+  ),
+  tar_target(
+    file_plot_epidemia_rt_infections_projections_extrapolated,
+    export_plot_with_title(data, 
+                           plot_epidemia_rt_infections_projection(data_multinomial_extrapolated, 
+                                                    epidemia_fit_delta_extrapolated, 
+                                                    epidemia_fit_omicron_extrapolated, 
+                                                    epidemia_projection_extrapolated_infections),
+                           "austria-epidemia-extrapolated-rt-infections-projections.png",
+                           subtitle="NULL",
+                           width=13,
+                           height=6.5),
+    format = "file"
+  ),
+  tar_target(
+    file_multinomial_proportions,
+    multinomial_proportions(data, multinomial_fit) %>%
+      write_csv("output/fit/multinomial_proportions.csv")
   )
 )

@@ -1,0 +1,52 @@
+@startuml
+
+rectangle "Epidemia model (for each variant)" as epidemia {
+  rectangle Infections
+  rectangle "Effective reproduction number" as Reff
+  rectangle "Unadjusted reproduction number" as Rt {
+    rectangle "Weekly random walk" as rw  
+    rectangle "NPI change points" as npis
+  }
+  
+  
+  rectangle "Generation time distribution" as tau
+  rectangle "Modeled cases" as case_model
+  rectangle "Infection to observation" as i2o
+  rectangle "Infection Ascertainment Ratio" as IAR
+  
+  Rt -up-> Reff
+  Reff --> Infections
+  Infections --> Reff
+  tau  -up-> Infections
+  Infections -> i2o
+  i2o -> case_model
+  IAR --> case_model
+}
+
+rectangle "Extrapolated cases" as extrapolated_cases
+rectangle "Weekly cases" as weekly_cases
+
+rectangle "Multinomial GLMM" as multinomial {
+  rectangle "growth_advantage"
+}
+
+rectangle "Weekly cases by variant" as variant_cases
+
+rectangle "Vaccinations by day, dose and product" as vaccinations
+
+rectangle "Population immunity" as pop_immunity {
+  rectangle "Vaccine effectivness model" as ve_model
+  rectangle "Estimated immunity" as immunity
+  
+  ve_model -up-> immunity
+}
+
+vaccinations ---up-> immunity
+immunity --> Reff
+
+variant_cases -up-> multinomial
+multinomial -up-> extrapolated_cases
+extrapolated_cases --up-> case_model
+weekly_cases -> extrapolated_cases
+
+@enduml

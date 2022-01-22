@@ -6,14 +6,14 @@
 #' @param subtitle Subtitle to add to the plot using [ggplot2::ggtitle()]
 #' 
 #' @return Relative output path of the stored file
-export_plot_with_title <- function(data, plot, filename="austria-variants.png", subtitle="") {
+export_plot_with_title <- function(data, plot, filename="austria-variants.png", subtitle="", width = 10, height = 5) {
   p_enriched <- plot +
     ggtitle("SARS-CoV-2 Variants - Austria\nSequencing and targeted PCR combined", subtitle = subtitle) +
     labs(caption = glue::glue("Data up to {max(data$Kalenderwoche)}
-         Source: AGES, https://www.ages.at/themen/krankheitserreger/coronavirus/sars-cov-2-varianten-in-oesterreich/"))
+         Cases by variant of concern: AGES, https://www.ages.at/themen/krankheitserreger/coronavirus/sars-cov-2-varianten-in-oesterreich/"))
   
   output_path <- paste0("output/", filename)
-  ggsave(plot = p_enriched, output_path, width = 10, height = 5)
+  ggsave(plot = p_enriched, output_path, width = width, height = height)
   
   output_path
 }
